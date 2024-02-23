@@ -46,6 +46,7 @@ This document should also include all the code used to *wrangle* data, as well a
 
 ## Proposal    
 What's up
+Hi!
 
 ## Import Data & Wrangling   
 
