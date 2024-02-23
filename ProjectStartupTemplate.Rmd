@@ -1,0 +1,129 @@
+---
+title: "STAT230 Project Starting Point"
+author: "Group D: Arthur, Donna, Kaitlyn, Michael"
+date: "Date"
+output: 
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+---
+
+```{r include=FALSE}
+# Don't delete this chunk if you are using the mosaic package
+# This loads the mosaic and mosaicData packages
+library(mosaic)
+```
+
+```{r include=FALSE}
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+# knitr settings to control how R chunks work.
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small"    # slightly smaller font for code
+)
+trellis.par.set(theme=theme.mosaic())  
+options(digits=5)
+```
+
+
+[DELETE & DON'T INCLUDE the following instructions in your proposal]   
+
+This template is provided to help you get started in finding the data you want to use for your projects and to develop a proposal.
+
+* Initial proposal: The proposal part should be no more than 3 pages (in the knitted PDF), including at least the following:  
+    + Work Team , all members’ names, and pre-Project Title (if there is one).
+    + What is the question of interest? WHY is this question interesting or important to your team?
+    + Which dataset (pick one) & variables are you planning to use? Which one is your response variable?  
+ 
+I would recommend each team to choose at least 6 variables from the ACS data, but no more than 10 variables (including the response variable) for the project. 
+
+* Perform an EDA (including graphs, numerical summaries, AND verbal descriptions) on the related variables that will be used in your modeling. Use appropriate graphical displays to justify that MLR is a reasonable choice for modeling (i.e. the CHOOSE step in 4-step modeling). You may find the document **Basic R you may Remember** under *Week 1 Tile* in Moodle particularly helpful.      
+Additional Notes -   
+
+This document should also include all the code used to *wrangle* data, as well as those used to create the *EDA* output (plots, tables, numerical summaries, etc). Recall that you've learned various `R` functions for data wrangling back in **R Activity 2** (Part 3), as well as from **R Tutorial 2** (under *Useful Resources*). Don't hesitate to ask for help from me or the TA on this front.      
+
+
+## Proposal    
+
+rfiehfoireofirefoi
+
+
+## Import Data & Wrangling   
+
+On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_housing.csv` in *the SAME folder* you saved this RMD file. I would suggest that you create a specific folder on RStudio for the Project. When you wrangle your data, it's always safer to save the mutated/filtered dataset with a new dataset name.     
+
+```{r}
+acsp <- read.csv("https://pmatheson.people.amherst.edu/stat230/2019ACS_pums.csv")         ##read in person data
+acsh <- read.csv("https://pmatheson.people.amherst.edu/stat230/2019ACS_housing.csv")      ##read in housing data
+dim(acs)         ##size of the dataset
+#names(acs)      ##variable names   
+```
+
+
+As you create new subsets of data and/or mutate variables make sure to save them under a new datafile name.  
+```{r}
+## wrangle!!  
+
+```
+## Sample code to filter or create categories with labels
+
+#Take out high values of HINCP (over 3 million)
+all_data <- filter(all_data, HINCP < 30000)
+
+#Mutate SCHL with fewer categories
+all_data <- mutate(all_data, SCHL = cut(SCHL, breaks = c(0, 15.5, 17.5, 20.5, 21.5, 24.5), labels = c("no hs", "hs", "some college", "BA", "beyond"), include.lowest = TRUE))
+
+#Mutate JWTRNS with fewer categories
+all_data <- mutate(all_data, JWTRNS = cut(JWTRNS, breaks = c(0, 1.5, 8.5, 11.5), labels = c("private vehicle", "public", "bike/walk"), include.lowest = TRUE))
+tally(~JWTRNS, data = all_data)
+#only two motorcycles, so we put it in public
+
+#Mutate HHT fewer categories
+all_data <- mutate(all_data, HHT = cut(HHT, breaks = c(0, 1.5, 3.5, 7.5), labels = c("married couple", "single parent", "nonfamily"), include.lowest = TRUE))
+tally(~HHT, data = all_data)
+
+#HHT, JWTRNS, SCHL
+all_data <- all_data %>%
+  mutate(HHT = as.factor(HHT), JWTRNS = as.factor(JWTRNS))
+
+
+
+
+
+## Exploratory Data Analysis (EDA)
+
+While you don't have to do all of the exploratory data analysis for the proposal, you can get started here by looking at univariate descriptives and graphs for the variables your team is considering.
+
+Explore distributions and associations graphically and numerically.
+
+
+## Help with plotting more than one at a time using grid.arrange()
+add to library section at top of RMD
+
+library(gridExtra)
+library(grid)
+
+Sample code to make plots together.  These are not your variables but you can see how it's done.
+```{r, warning = FALSE, echo = FALSE}
+##univariate analysis of response variable - describes shape, center and spread
+favstats(~GASP, data = acs1)
+gf_histogram(~GASP, bins = 10, data = acs1)
+
+#univariate EDA on response variable (density plots of each variable individually; allows for determination of shape, center, and spread for each individual variable) 
+m1 <- gf_dens(~ FULP, data = acs1, color = "blue")         
+m2 <- gf_dens(~ ELEP, data = acs1, color = "deepskyblue")
+m3 <- gf_dens(~ RNTP, data = acs1, color = "pink")
+m4 <- gf_dens(~ BDSP, data = acs1, color = "purple")
+
+#bivariate EDA between response and qualitative predictors
+m5 <- gf_boxplot(GASP ~ REGION, data = acs1, color = "firebrick2") #4 categories: Northeast, Midwest, South, West
+m6 <- gf_boxplot(GASP ~ HFL, data = acs1, color = "chartreuse1") #9 categories: Gas from underground pipes, 
+#Gas: bottled, tank, or LP, Electricity, Fuel oil, etc., coal or coke, wood, solar energy, other, None
+grid.arrange(m1, m2, m3, m4, m5, m6, ncol=3) 
+```
+
+
+
+# Help with rotating labels - use las=2
+barplot(mytable,main="Car makes",ylab="Freqency",xlab="make",las=2)
