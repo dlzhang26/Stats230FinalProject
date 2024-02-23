@@ -1,6 +1,6 @@
 ---
 title: "STAT230 Project Starting Point"
-author: "Group X: NAMES"
+author: "Group D: NAMES"
 date: "Date"
 output: 
   pdf_document:
