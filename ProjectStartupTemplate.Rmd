@@ -1,5 +1,5 @@
 ---
-title: "STAT230 Project Starting Point        "
+title: "STAT230 Project Starting Point Edittttttttttt"
 author: "Group D: Arthur, Donna, Kaitlyn, Michael"
 date: "Date"
 output: 
