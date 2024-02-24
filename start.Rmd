@@ -50,6 +50,7 @@ Hi!
 
 ```{r}
 data=Concussion_Injuries_2012_2014
+msummary(data)
 ```
 
 ```{r}
