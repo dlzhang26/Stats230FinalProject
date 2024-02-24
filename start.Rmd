@@ -12,6 +12,10 @@ output:
 # Don't delete this chunk if you are using the mosaic package
 # This loads the mosaic and mosaicData packages
 library(mosaic)
+require(tidyr)
+require(lattice)
+options(digits=3)
+options(scipen=5)
 ```
 
 ```{r include=FALSE}
@@ -45,15 +49,16 @@ This document should also include all the code used to *wrangle* data, as well a
 
 
 ## Proposal    
-What's up
-Hi!
 
 ```{r}
-data=Concussion_Injuries_2012_2014
-msummary(data)
+#getwd() in console to find the directory where the csv file is stored on your conputer
+file <- file.choose("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/Concussion_Injuries_2012-2014.csv")
+alldata <- read.csv(file) 
+glimpse(alldata)
 ```
 
 ```{r}
+
 read_csv('Concussion_Injuries_2012_2014', show_col_types = FALSE)
 ```
 
