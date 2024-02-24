@@ -14,6 +14,8 @@ output:
 library(mosaic)
 require(tidyr)
 require(lattice)
+library(gridExtra)
+library(grid)
 options(digits=3)
 options(scipen=5)
 ```
@@ -50,6 +52,11 @@ This document should also include all the code used to *wrangle* data, as well a
 
 ## Proposal    
 
+
+## Import Data & Wrangling   
+
+On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_housing.csv` in *the SAME folder* you saved this RMD file. I would suggest that you create a specific folder on RStudio for the Project. When you wrangle your data, it's always safer to save the mutated/filtered dataset with a new dataset name.     
+
 ```{r}
 #getwd() in console to find the directory where the csv file is stored on your computer
 #For your computer you need to change the path so you can reed the file
@@ -59,30 +66,23 @@ This document should also include all the code used to *wrangle* data, as well a
 alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
 
 glimpse(alldata)
+names(alldata)
 ```
-
-```{r}
-
-read_csv('Concussion_Injuries_2012_2014', show_col_types = FALSE)
-```
-
-
-## Import Data & Wrangling   
-
-On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_housing.csv` in *the SAME folder* you saved this RMD file. I would suggest that you create a specific folder on RStudio for the Project. When you wrangle your data, it's always safer to save the mutated/filtered dataset with a new dataset name.     
 
 ```{r}
 acsp <- read.csv("https://pmatheson.people.amherst.edu/stat230/2019ACS_pums.csv")         ##read in person data
 acsh <- read.csv("https://pmatheson.people.amherst.edu/stat230/2019ACS_housing.csv")      ##read in housing data
-dim(acs)         ##size of the dataset
-#names(acs)      ##variable names   
+#dim(acsp)         ##size of the dataset
+#names(acsp)      ##variable names   
+#glimpse(acsp)
 ```
 
 
 As you create new subsets of data and/or mutate variables make sure to save them under a new datafile name.  
 ```{r}
 ## wrangle!!  
-
+studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, TimeOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
+names(studydata)
 ```
 ## Sample code to filter or create categories with labels
 
