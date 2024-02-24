@@ -48,6 +48,15 @@ This document should also include all the code used to *wrangle* data, as well a
 What's up
 Hi!
 
+```{r}
+data=Concussion_Injuries_2012_2014
+```
+
+```{r}
+read_csv('Concussion_Injuries_2012_2014', show_col_types = FALSE)
+```
+
+
 ## Import Data & Wrangling   
 
 On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_housing.csv` in *the SAME folder* you saved this RMD file. I would suggest that you create a specific folder on RStudio for the Project. When you wrangle your data, it's always safer to save the mutated/filtered dataset with a new dataset name.     
