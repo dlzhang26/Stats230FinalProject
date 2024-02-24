@@ -51,6 +51,10 @@ This document should also include all the code used to *wrangle* data, as well a
 
 
 ## Proposal    
+```{r}
+alldata <- read.csv("/home/class27/khuang27/Stat_230_Final_Project!")
+glimse(alldata)
+```
 
 
 ## Import Data & Wrangling   
@@ -64,6 +68,9 @@ On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_hou
 
 #For Donna's computer
 alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
+
+#For Kaitlyn's computer
+alldata <- read.csv("/home/class27/khuang27/Stat 230 Final Project!")
 
 glimpse(alldata)
 names(alldata)
