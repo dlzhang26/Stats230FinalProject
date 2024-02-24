@@ -52,8 +52,8 @@ This document should also include all the code used to *wrangle* data, as well a
 
 ```{r}
 #getwd() in console to find the directory where the csv file is stored on your conputer
-file <- file.choose("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/Concussion_Injuries_2012-2014.csv")
-alldata <- read.csv(file) 
+setwd("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/")
+alldata <- read.csv("/ConcussionInjuries2012-2014.csv") 
 glimpse(alldata)
 ```
 
