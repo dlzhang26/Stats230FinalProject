@@ -83,6 +83,9 @@ As you create new subsets of data and/or mutate variables make sure to save them
 ## wrangle!!  
 studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, TimeOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
 names(studydata)
+gf_histogram(~TimeOfInjury, data = studydata)
+gf_histogram(~amtTimeInjured, data = studydata) ## binary data idk what the data means
+
 ```
 ## Sample code to filter or create categories with labels
 
