@@ -67,10 +67,10 @@ On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_hou
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 #For Donna's computer
-alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
+#alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
 
 #For Kaitlyn's computer
-alldata <- read.csv("/home/class27/khuang27/Stat 230 Final Project!")
+alldata <- read.csv("/home/class27/khuang27/Stat_230_Final_Project!/ConcussionInjuries2012-2014.csv")
 
 glimpse(alldata)
 names(alldata)
