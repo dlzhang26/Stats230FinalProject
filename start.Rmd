@@ -59,7 +59,6 @@ This document should also include all the code used to *wrangle* data, as well a
 **POPULATION**
 
 **RESPONSE VARIABLE**
-We chose Post Injury Play Time as our response variable. This is a quantitative variable, and is represented by the average number of downs per game after the player returns from the injury. The distribution is bi-modal; many observations are close to 0 downs - likely influenced by  players who did not return from their injury, and many appear at 99 downs. Currently, we are unable to provide descriptive statistics for Post Injury Play Time, because we have not been able to mutate our data to become purely numerical due to the presence of units in the observations. 
 
 **EXPLANATORY VARIABLES**
 **Pre-season injury** is a qualitative variable, categorized by Yes – the player sustained an injury before the season began, and No – the player did not sustain an injury before the season.
