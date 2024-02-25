@@ -135,6 +135,8 @@ gf_bar(~Season, data = studydata)
 gf_histogram(~amtGamesMissed, data = studydata)
 #gf_bar(~AveragePreInjuryPlayTime, data = studydata)
 barplot(table(studydata$AveragePreInjuryPlayTime), main="Pre Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
+barplot(table(studydata$PostInjuryPlayTime), main="Post Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
+gf_histogram(~TimeOfInjury, data = studydata)
 ```
 
 While you don't have to do all of the exploratory data analysis for the proposal, you can get started here by looking at univariate descriptives and graphs for the variables your team is considering.
