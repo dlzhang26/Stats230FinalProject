@@ -1,22 +1,20 @@
 ---
 title: "STAT230 Project Starting Point"
-author: "Group D: NAMES"
+author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
 date: "Date"
-output: 
+output:
   pdf_document:
     fig_height: 3
     fig_width: 5
+  word_document: default
 ---
 
 ```{r include=FALSE}
-# Don't delete this chunk if you are using the mosaic package
-# This loads the mosaic and mosaicData packages
 library(mosaic)
 require(tidyr)
 require(lattice)
 library(gridExtra)
 library(grid)
-options(digits=3)
 options(scipen=5)
 ```
 
@@ -70,7 +68,7 @@ We chose Post Injury Play Time as our response variable. This is a quantitative 
 ## Import Data & Wrangling   
    
 
-```{r}
+```{r, warning = FALSE, echo = FALSE, include=FALSE}
 #getwd() in console to find the directory where the csv file is stored on your computer
 #For your computer you need to change the path so you can reed the file
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
@@ -85,7 +83,7 @@ alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProj
 ##names(alldata)
 ```
 
-```{r}
+```{r, warning = FALSE, echo = FALSE, include=FALSE}
 
 studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, TimeOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
 #names(studydata)
@@ -95,7 +93,7 @@ studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.
 
 ## Exploratory Data Analysis (EDA)
 
-```{r, warning = FALSE, echo = FALSE}
+```{r, warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 15}
 m1 <- gf_histogram(~TimeOfInjury, data = studydata)
 m2 <- gf_histogram(~amtTimeInjured, data = studydata) ## binary data idk what the data means like 1 week or 0 weeks??
 m3 <- gf_bar(~ PreseasonInjury, data = studydata, fill = c("darkred", "forestgreen"))
@@ -104,14 +102,18 @@ m4 <- gf_bar(~Season, data = studydata)
 
 m5 <- gf_histogram(~amtGamesMissed, data = studydata)
 
+grid.arrange(m1, m2, m3, m4, m5, ncol = 5,heights = .5) 
 
-barplot(table(studydata$Position), main="Positions",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
+
 
 #barplot(table(studydata$AveragePreInjuryPlayTime), main="Pre Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
 
 #barplot(table(studydata$PostInjuryPlayTime), main="Post Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
 
-grid.arrange(m1, m2, m3, ncol=3) 
-grid.arrange(m4, m5, ncol = 1)
+
 
 ```
+```{r, warning = FALSE, echo = FALSE}
+barplot(table(studydata$Position), main="Positions",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
+```
+
