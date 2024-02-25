@@ -64,10 +64,10 @@ On RStudio, be sure to save the dataset file, `2019ACS_pums.csv` or `2019ACS_hou
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 #For Donna's computer
-#alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
+alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
 
 #For Kaitlyn's computer
-alldata <- read.csv("/home/class27/khuang27/STAT230FinalProject/ConcussionInjuries2012-2014.csv")
+#alldata <- read.csv("/home/class27/khuang27/STAT230FinalProject/ConcussionInjuries2012-2014.csv")
 
 glimpse(alldata)
 names(alldata)
@@ -85,12 +85,17 @@ acsh <- read.csv("https://pmatheson.people.amherst.edu/stat230/2019ACS_housing.c
 As you create new subsets of data and/or mutate variables make sure to save them under a new datafile name.  
 ```{r}
 ## wrangle!!  
-studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, TimeOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
-names(studydata)
-gf_histogram(~TimeOfInjury, data = studydata)
-gf_histogram(~amtTimeInjured, data = studydata) ## binary data idk what the data means like 1 week or 0 weeks??
+
+
 
 ```
+
+```{r}
+
+studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, TimeOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
+#names(studydata)
+```
+
 ## Sample code to filter or create categories with labels
 
 #Take out high values of HINCP (over 3 million)
@@ -117,6 +122,20 @@ all_data <- all_data %>%
 
 
 ## Exploratory Data Analysis (EDA)
+
+```{r}
+gf_histogram(~TimeOfInjury, data = studydata)
+gf_histogram(~amtTimeInjured, data = studydata) ## binary data idk what the data means like 1 week or 0 weeks??
+gf_bar(~ PreseasonInjury, data = studydata, col = c("red", "green"))
+
+barplot(table(studydata$Position), main="Positions",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
+
+gf_bar(~Season, data = studydata)
+
+gf_histogram(~amtGamesMissed, data = studydata)
+#gf_bar(~AveragePreInjuryPlayTime, data = studydata)
+barplot(table(studydata$AveragePreInjuryPlayTime), main="Pre Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
+```
 
 While you don't have to do all of the exploratory data analysis for the proposal, you can get started here by looking at univariate descriptives and graphs for the variables your team is considering.
 
