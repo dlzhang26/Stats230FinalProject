@@ -1,7 +1,7 @@
 ---
-title: "STAT230 Project Starting Point"
+title: "Concussions in NFL Players and Post Injury Play Time"
 author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
-date: "Date"
+date: "Monday, February 26, 2024"
 output:
   pdf_document:
     fig_height: 3
@@ -12,6 +12,7 @@ output:
 ```{r include=FALSE}
 library(mosaic)
 require(tidyr)
+library(tidyverse)
 require(lattice)
 library(gridExtra)
 library(grid)
@@ -46,6 +47,7 @@ We will be using data from Concussions in the NFL (2012-2014) which contains a d
 **POPULATION** 
 
 The population of this dataset is NFL players during the seasons of 2012 to 2014 that obtained a concussion. This sample population is a representation of the larger population of all football players at every level: high school, collegiate, and professional level. 
+
 **RESPONSE VARIABLE**
 
 We chose Post Injury Play Time as our response variable. This is a quantitative variable, and is represented by the average number of downs per game after the player returns from the injury. The distribution is bi-modal; many observations are close to 0 downs - likely influenced by  players who did not return from their injury, and many appear at 99 downs. Currently, we are unable to provide descriptive statistics for Post Injury Play Time, because we have not been able to mutate our data to become purely numerical due to the presence of units in the observations. 
@@ -60,7 +62,7 @@ We chose Post Injury Play Time as our response variable. This is a quantitative 
 
 **Number of games missed** is a quantitative variable, measured by how many games in one season a player missed after sustaining the injury. 
 
-**Average play time** before the injury is a quantitative variable, measured in the average number of downs per game that occurred before the player sustained the injury. 
+**Average play time** before the injury is a quantitative variable, measured in the average number of downs per game that occurred before the player sustained the injury. (We are working on formating the data into a quantitative variable, so do not currently have graphs for it yet)
  
 **Week of injury** is a quantitative variable, measured in the number of weeks into the football season that the player sustained the injury.
 
@@ -82,16 +84,22 @@ alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProj
 
 ```{r, warning = FALSE, echo = FALSE, include=FALSE}
 
-studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, TimeOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
-#names(studydata)
+
+studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
+names(studydata)
+
+studydata$PostIPT = parse_number(studydata$PostInjuryPlayTime)
+
+studydata$PreIPT = parse_number(studydata$AveragePreInjuryPlayTime)
+
 ```
 
 
 
-## Exploratory Data Analysis (EDA)
+## Exploratory Data Analysis 
 
-```{r, warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 15}
-m1 <- gf_histogram(~TimeOfInjury, data = studydata)
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
+m1 <- gf_histogram(~WeekOfInjury, data = studydata)
 m2 <- gf_histogram(~amtTimeInjured, data = studydata) ## binary data idk what the data means like 1 week or 0 weeks??
 m3 <- gf_bar(~ PreseasonInjury, data = studydata, fill = c("darkred", "forestgreen"))
 
@@ -99,15 +107,16 @@ m4 <- gf_bar(~Season, data = studydata)
 
 m5 <- gf_histogram(~amtGamesMissed, data = studydata)
 
-grid.arrange(m1, m2, m3, m4, m5, ncol = 5,heights = .5) 
+grid.arrange(m1, m3, m4, m5, ncol = 4 ,heights = .5) 
 
+m6 <- gf_dhistogram(~PreIPT, data = studydata) %>%
+  gf_dens()
+m7 <- gf_dhistogram(~PostIPT, data = studydata)%>%
+  gf_dens()
 
-
-#barplot(table(studydata$AveragePreInjuryPlayTime), main="Pre Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
-
-#barplot(table(studydata$PostInjuryPlayTime), main="Post Injury Playtime",ylab="Freqency", cex.axis = 0.8, cex.names = 0.6, las=2)
-
-
+#favstats(~PreIPT, data = studydata)
+#favstats(~PostIPT, data = studydata)
+grid.arrange(m6,m7, ncol = 2 ,heights = .5)
 
 ```
 ```{r, warning = FALSE, echo = FALSE}
