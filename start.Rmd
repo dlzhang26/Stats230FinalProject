@@ -1,6 +1,6 @@
 ---
 title: "Concussions in NFL Players and Post Injury Play Time"
-author: 'Group D: Arthur, Donna, Kaitlyn, Michael a'
+author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
 date: "Monday, February 26, 2024"
 output:
   pdf_document:
@@ -73,13 +73,13 @@ We chose Post Injury Play Time as our response variable. This is a quantitative 
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 #For Donna's computer
-alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
+#alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
 
 #For Kaitlyn's computer
-#alldata <- read.csv("/home/class27/khuang27/STAT230FinalProject/ConcussionInjuries2012-2014.csv")
+alldata <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
 
-##glimpse(alldata)
-##names(alldata)
+glimpse(alldata)
+names(alldata)
 ```
 
 ```{r, warning = FALSE, echo = FALSE, include=FALSE}
