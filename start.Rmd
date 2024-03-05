@@ -42,11 +42,11 @@ Concussions have been a trending topic in football for the last few years as cur
  
 **DATA**
 
-We will be using data from Concussions in the NFL (2012-2014) which contains a dataset concerning NFL players who sustained concussions during the season from the years 2012 to 2014. This dataset details a number of factors surrounding these players and their concussions such as pre-season injury history, position, average play time after concussion, the number of weeks concussed, the season they got concussions, and more. The Concussions in the NFL (2012-2014) dataset will be utilized in our analysis to determine the impact of concussions on players' total playing time. 
+We will be using data from Concussions in the NFL (2012-2014) which contains a dataset concerning NFL players who sustained concussions, head injuries, and illness during the season from the years 2012 to 2014. This dataset details a number of factors surrounding these players and their injuries such as pre-season injury history, position, average play time after injury, the number of weeks injured, the season they got injured, and more. We will filter the dataset for only concussed players to determine the impact of concussions on players' total playing time. 
 
 **POPULATION** 
 
-The population of this dataset is NFL players during the seasons of 2012 to 2014 that obtained a concussion. This sample population is a representation of the larger population of all football players at every level: high school, collegiate, and professional level. 
+The population of this dataset is NFL players during the seasons of 2012 to 2014 that obtained a concussion. Our sample will consist of a random sample of NFL players in a dataset filtered for just those who obtained a concussion in 2012-2014. 
 
 **RESPONSE VARIABLE**
 
