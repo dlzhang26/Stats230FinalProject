@@ -1,6 +1,6 @@
 ---
 title: "Concussions in NFL Players and Post Injury Play Time"
-author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
+author: 'Group D: Arthur, Donna, Kaitlyn, Michael a'
 date: "Monday, February 26, 2024"
 output:
   pdf_document:
