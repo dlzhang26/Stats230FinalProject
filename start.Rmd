@@ -84,7 +84,7 @@ names(alldata)
 
 ```{r, warning = FALSE, echo = FALSE, include=FALSE}
 
-alldata <- filter(alldata, Reported.Injury.Type == "Concussion") ## 
+alldata <- filter(alldata, Reported.Injury.Type == "Concussion") ## filter so there's only concussions
 studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
 names(studydata)
 
