@@ -46,7 +46,7 @@ We will be using data from Concussions in the NFL (2012-2014) which contains a d
 
 **POPULATION** 
 
-The population of this dataset is NFL players during the seasons of 2012 to 2014 that obtained a concussion. Our sample will consist of a random sample of NFL players in a dataset filtered for just those who obtained a concussion in 2012-2014. 
+The population of this dataset is NFL players during all three seasons (2012-2014) that obtained a concussion. Our sample will consist of concussion data from the first two seasons, which we will use to predict the third season.  
 
 **RESPONSE VARIABLE**
 
