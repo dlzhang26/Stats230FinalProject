@@ -16,6 +16,7 @@ library(tidyverse)
 require(lattice)
 library(gridExtra)
 library(grid)
+library(leaps)
 options(scipen=5)
 ```
 
@@ -50,7 +51,7 @@ The population of this dataset is NFL players during all three seasons (2012-201
 
 **RESPONSE VARIABLE**
 
-We chose Post Injury Play Time as our response variable. This is a quantitative variable, and is represented by the average number of downs per game after the player returns from the injury. The distribution is bi-modal; many observations are close to 0 downs - likely influenced by  players who did not return from their injury, and many appear at 99 downs. Currently, we are unable to provide descriptive statistics for Post Injury Play Time, because we have not been able to mutate our data to become purely numerical due to the presence of units in the observations. 
+We chose Post Injury Play Time as our response variable. This is a quantitative variable, and is represented by the average number of downs per game after the player returns from the injury. The distribution is bi-modal; many observations are close to 0 downs - likely influenced byplayers who did not return from their injury, and many appear at 99 downs. Currently, we are unable to provide descriptive statistics for Post Injury Play Time, because we have not been able to mutate our data to become purely numerical due to the presence of units in the observations. 
  
 **EXPLANATORY VARIABLES**
 
@@ -84,13 +85,27 @@ names(alldata)
 
 ```{r, warning = FALSE, echo = FALSE, include=FALSE}
 
-alldata <- filter(alldata, Reported.Injury.Type == "Concussion") ## filter so there's only concussions
-studydata <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
-names(studydata)
+alldata <- filter(alldata, Reported.Injury.Type == "Concussion") ## filter so there's only concussions 
+predictdata <-filter(alldata, Season == "2014/2015") ## data for the season we're predicting
+alldata <- filter(alldata, Season != "2014/2015") ## our sample data
 
-studydata$PostIPT = parse_number(studydata$PostInjuryPlayTime)
+studyD <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
 
-studydata$PreIPT = parse_number(studydata$AveragePreInjuryPlayTime)
+names(studyD)
+
+studyD$PostIPT = parse_number(studyD$PostInjuryPlayTime)
+
+studyD$PreIPT = parse_number(studyD$AveragePreInjuryPlayTime)
+
+```
+
+```{r}
+## this re-categorizes position to offense and defense
+studydata <- studyD %>% 
+    mutate(Position = case_when(
+    Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
+    Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
+tally(~ Position, data = studydata)
 
 ```
 
