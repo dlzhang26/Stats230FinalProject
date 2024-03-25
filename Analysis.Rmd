@@ -1,0 +1,45 @@
+---
+title: "Season's Informaiton and Post Injury Play Time For NFL Players"
+author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
+date: "Friday, April 6, 2024"
+output:
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document: default
+---
+
+```{r include=FALSE}
+library(mosaic)
+require(tidyr)
+library(tidyverse)
+require(lattice)
+library(gridExtra)
+library(grid)
+library(leaps)
+options(scipen=5)
+```
+
+```{r include=FALSE}
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+# knitr settings to control how R chunks work.
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small"    # slightly smaller font for code
+)
+trellis.par.set(theme=theme.mosaic())  
+options(digits=5)
+```
+
+*Project Question/Aim*
+
+*Research Question*
+
+*Variables*
+
+*Step 1: Univariate analysis - descriptive stats/plots for each variable*
+
+*Step 2: Compare variables in Bivariate Manner - Stats, Plots, and Compare*
+
+*Step 3: Model Building and Variable Selection - Choosing Variables, Checking/Evaluating Fit, and Final Model Criteria*
