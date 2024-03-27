@@ -32,6 +32,42 @@ trellis.par.set(theme=theme.mosaic())
 options(digits=5)
 ```
 
+
+```{r, warning = FALSE, echo = FALSE, include=FALSE}
+#getwd() in console to find the directory where the csv file is stored on your computer
+#For your computer you need to change the path so you can reed the file
+#alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
+
+#For Donna's computer
+alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
+
+#For Kaitlyn's computer
+#alldata <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
+
+glimpse(alldata)
+names(alldata)
+
+#######################################################################################################
+
+alldata <- filter(alldata, Reported.Injury.Type == "Concussion") ## filter so there's only concussions 
+predictdata <-filter(alldata, Season == "2014/2015") ## data for the season we're predicting
+alldata <- filter(alldata, Season != "2014/2015") ## our sample data
+
+studyD <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
+studyD <- studyD %>% 
+  select(PostInjuryPlayTime, PreseasonInjury, Position, Season, amtGamesMissed, AveragePreInjuryPlayTime, WeekOfInjury )
+
+studyD$PostIPT = parse_number(studyD$PostInjuryPlayTime)
+
+studyD$PreIPT = parse_number(studyD$AveragePreInjuryPlayTime)
+
+#######################################################################################################
+## this re-categorizes position to offense and defense
+studydata <- studyD %>% 
+    mutate(Position = case_when(
+    Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
+    Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
+```
 *Project Question/Aim*
 
 *Research Question*
