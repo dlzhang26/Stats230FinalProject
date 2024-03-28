@@ -56,7 +56,7 @@ alldata <- filter(alldata, Season != "2014/2015") ## our sample data
 
 studyD <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
 studyD <- studyD %>% 
-  select(PostInjuryPlayTime, PreseasonInjury, Position, Season, amtGamesMissed, AveragePreInjuryPlayTime, WeekOfInjury )
+  select(PostInjuryPlayTime, PreseasonInjury, Position, Season, amtGamesMissed, AveragePreInjuryPlayTime, WeekOfInjury)
 
 studyD$PostIPT = parse_number(studyD$PostInjuryPlayTime)
 
@@ -116,9 +116,8 @@ grid.arrange(m4, m5, ncol = 2 ,heights = .5)
 
 ```{r}
 studydata1 <- select(studydata, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season")
-##ggpairs(studydata1)
+ggpairs(studydata1)
 
-gf_point(PostIPT ~ amtGamesMissed, data = studydata)
 
 ```
 
