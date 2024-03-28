@@ -11,6 +11,7 @@ output:
 
 ```{r include=FALSE}
 library(mosaic)
+library(GGally)
 require(tidyr)
 library(tidyverse)
 require(lattice)
@@ -75,7 +76,51 @@ studydata <- studyD %>%
 *Variables*
 
 *Step 1: Univariate analysis - descriptive stats/plots for each variable*
+```{r}
+##PostIPT RESPONSE VARIABLE
+favstats(~PostIPT, data = studydata)
+gf_dhistogram(~PostIPT, data = studydata)%>%
+  gf_dens()
+
+```
+```{r}
+##EXPLANATORY VARIABLES
+
+## quantitative
+
+m1 <- gf_histogram(~amtGamesMissed, data = studydata)
+
+m2 <- gf_dhistogram(~PreIPT, data = studydata) %>%
+  gf_dens()
+
+m3 <- gf_histogram(~WeekOfInjury, data = studydata, main = "Distribution of Week of Injury")
+
+
+grid.arrange(m1, m2, m3, ncol = 3 ,heights = .5) 
+
+
+
+##qualitative
+m4 <- gf_bar(~ PreseasonInjury, data = studydata, fill = c("darkred", "forestgreen"), main = "Number of Preseason Injuries")
+
+tally(~ Position, data = studydata)
+
+m5 <- gf_bar(~Season, data = studydata)
+
+grid.arrange(m4, m5, ncol = 2 ,heights = .5) 
+
+```
+
 
 *Step 2: Compare variables in Bivariate Manner - Stats, Plots, and Compare*
+
+```{r}
+studydata1 <- select(studydata, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season")
+##ggpairs(studydata1)
+
+gf_point(PostIPT ~ amtGamesMissed, data = studydata)
+
+```
+
 
 *Step 3: Model Building and Variable Selection - Choosing Variables, Checking/Evaluating Fit, and Final Model Criteria*
