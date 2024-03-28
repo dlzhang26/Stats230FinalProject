@@ -112,7 +112,7 @@ grid.arrange(m4, m5, ncol = 2 ,heights = .5)
 ```
 
 
-*Step 2: Compare variables in Bivariate Manner - Stats, Plots, and Compare*
+*Step 2: Compare variables in Bivariate Manner -  Stats, Plots, and Compare*
 
 ```{r}
 studydata1 <- select(studydata, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season")
