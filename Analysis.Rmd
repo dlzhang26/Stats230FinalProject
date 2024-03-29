@@ -79,11 +79,15 @@ studydata <- studyD %>%
 ```
 *Project Question/Aim*
 
-*Research Question*
+Concussions have been a trending topic in football for the last few years as current and former players suffer the consequences of such a physical sport. We want to determine if there is a significant relationship between Post-Injury Play Time and our chosen predictor variables, and if the model derived from the first two years of data can predict a player’s Post-Injury Play Time in the third season. 
 
 *Variables*
 
+Our response variables is Post-Injury Play Time. Our explanatory variables that we are using are WeekOfInjury, Position, PreseasonInjury, Season, amtGamesMissed, and PreIPT. PreseasonInjury, Position, Season are qualitative variables and amtGamesMissed, PreIPT, WeekOfInjury are quantitative variables. 
+
 *Step 1: Univariate analysis - descriptive stats/plots for each variable*
+RESPONSE VARIABLE: 
+Post-Injury Play Time - Descriptive statistics and a frequency histogram with a density plot are shown below. 
 ```{r}
 ##PostIPT RESPONSE VARIABLE
 favstats(~PostIPT, data = studydata)
@@ -91,6 +95,9 @@ gf_dhistogram(~PostIPT, data = studydata)%>%
   gf_dens()
 
 ```
+
+EXPLANATORY VARIABLES:
+WeekOfInjury, Position, PreseasonInjury, Season, amtGamesMissed, and PreIPT are shown below as frequency histograms. 
 ```{r}
 ##EXPLANATORY VARIABLES
 
@@ -119,8 +126,23 @@ grid.arrange(m4, m5, ncol = 2 ,heights = .5)
 
 ```
 
-
 *Step 2: Compare variables in Bivariate Manner -  Stats, Plots, and Compare*
+
+We will make the following comparisons in a bivariate manner:
+
+*Post-Injury Play-Time vs. Position.* We will represent this with a box plot, where the two categories are defense and offense. 
+
+*Post-Injury Play-Time vs. Pre-Season Injury.* We will represent this with a box plot, in which the two categories are “No,” the player didn’t sustain an injury in the pre-season, and “Yes,” the player did sustain an injury in the pre-season. 
+
+*Post-Injury Play-Time vs. Season.* We will represent this with a box plot, in which the two categories are the 2012-2013 season and the 2013-2014 season. 
+
+*Post-Injury Play-Time vs. Post-Injury Play Time.* We will represent this with a scatterplot. 
+
+*Post-Injury Play-Time vs. Week of Injury.* We will represent this with a scatterplot.
+
+*Post-Injury Play-Time vs. amtGamesMissed.* We will represent this with a scatterplot.
+
+A ggpairs of all the relationships is shown below, and which we will use to identify their correlations as well as any cases of multicollinearity. If there is indeed multicollinearity, we can use VIF to determine which variables are responsible.
 
 ```{r}
 studydata1 <- select(studydata, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season")
