@@ -147,9 +147,6 @@ A ggpairs of all the relationships is shown below, and which we will use to iden
 ```{r}
 studydata1 <- select(studydata, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season")
 ggpairs(studydata1)
-
-
-
 ```
 
 
