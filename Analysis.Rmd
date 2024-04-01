@@ -35,47 +35,58 @@ options(digits=5)
 
 
 ```{r}
+###############################################################################################
 #getwd() in console to find the directory where the csv file is stored on your computer
 #For your computer you need to change the path so you can reed the file
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
-#For Donna's computer
-#alldata <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv") 
+##Donna's computer
+df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+
 
 #For Kaitlyn's computer
-alldata <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
+#df1 <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class27/khuang27/StatsProjectFinal/HeadInjuredPlayers.csv")
 
-glimpse(alldata)
-names(alldata)
+###############################################################################################
+##Merge
+## gets rid of players who had multiple injuries in the three years
+mergeData <- merge(x = df2, y = df1[!duplicated(df1$Player), ], by = "Player", all.x = TRUE)
+mergeData <- filter(mergeData, Reported.Injury.Type == "Concussion") ## filter so there's only concussions 
 
-#######################################################################################################
+## qual --> quant var
+mergeData$Play.Time.After.Injury = parse_number(mergeData$Play.Time.After.Injury)
+mergeData$Average.Playtime.Before.Injury = parse_number(mergeData$Average.Playtime.Before.Injury)
+###############################################################################################
+##rename variables
+nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, PreIPT = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed, GM12 = X2012.2013...Games.Missed, GM13 = X2013.2014...Games.Missed, GM14 = X2014.2015...Games.Missed, I12 = X2012.2013...Number.of.Injuries , I13 = X2013.2014...Number.of.Injuries, I14 = X2014.2015...Number.of.Injuries, TotalInjuries = Total.Number.of.Injuries..2012.2014., PosDuringInjury = Roles.during.injuries, DOB = Date.of.Birth, AgeFirstConcussion = Age.first.concussion..2012.2014., totalGamesMissed = Total.Games.Missed..2012.2014., TeamDurConcussion = Team.s..during.concussion.incidents.2012.2014, DOI = Date)
 
-alldata <- filter(alldata, Reported.Injury.Type == "Concussion") ## filter so there's only concussions 
-predictdata <-filter(alldata, Season == "2014/2015") ## data for the season we're predicting
-alldata <- filter(alldata, Season != "2014/2015") ## our sample data
+###############################################################################################
+## select variables 
+studyD <- nameData %>% 
+  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeFirstConcussion, Position)
 
-studyD <- rename(alldata, OppTeam = Opposing.Team, PostInjuryPlayTime = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, AveragePreInjuryPlayTime = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed)
+## getting the current age 
+# Convert DOB to date objects
+studyD$DOB <- as.Date(as.character(studyD$DOB), format = "%d/%m/%Y")
 
-studyD <- studyD %>% 
-  select(PostInjuryPlayTime, PreseasonInjury, Position, Season, amtGamesMissed, AveragePreInjuryPlayTime, WeekOfInjury, TotalSnaps)
+# Calculate current age
+given_date <- as.Date("2024-04-01")
+current_age_in_years <- as.numeric(interval(studyD$DOB, given_date) / dyears(1))
+studyD$CurrentAge <- round(current_age_in_years, 1)
 
-studyD$PostIPT = parse_number(studyD$PostInjuryPlayTime)
-
-studyD$PreIPT = parse_number(studyD$AveragePreInjuryPlayTime)
-
-
-gf_point(PostIPT~TotalSnaps, data = studyD)
-
-gf_point(PostIPT~PreIPT, data = studyD)
-
-#######################################################################################################
+#############################################################################
 ## this re-categorizes position to offense and defense
 studydata <- studyD %>% 
     mutate(Position = case_when(
     Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
     Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
 
-
+#############################################################################
+## creating population and sample
+predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're predicting
+finalData <- filter(studydata, Season != "2014/2015") ## our sample data
 ```
 *Project Question/Aim*
 
