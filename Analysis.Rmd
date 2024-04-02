@@ -18,6 +18,7 @@ require(lattice)
 library(gridExtra)
 library(grid)
 library(leaps)
+library(lubridate) # finding age at a given date
 options(scipen=5)
 ```
 
@@ -101,8 +102,8 @@ RESPONSE VARIABLE:
 Post-Injury Play Time - Descriptive statistics and a frequency histogram with a density plot are shown below. 
 ```{r}
 ##PostIPT RESPONSE VARIABLE
-favstats(~PostIPT, data = studydata)
-gf_dhistogram(~PostIPT, data = studydata)%>%
+favstats(~PostIPT, data = finalData)
+gf_dhistogram(~PostIPT, data = finalData)%>%
   gf_dens()
 
 ```
@@ -114,24 +115,28 @@ WeekOfInjury, Position, PreseasonInjury, Season, amtGamesMissed, and PreIPT are 
 
 ## quantitative
 
-m1 <- gf_histogram(~amtGamesMissed, data = studydata)
+m1 <- gf_histogram(~amtGamesMissed, data = finalData)
 
-m2 <- gf_dhistogram(~PreIPT, data = studydata) %>%
+m2 <- gf_dhistogram(~PreIPT, data = finalData) %>%
   gf_dens()
 
-m3 <- gf_histogram(~WeekOfInjury, data = studydata, main = "Distribution of Week of Injury")
+m3 <- gf_histogram(~WeekOfInjury, data = finalData, main = "Distribution of Week of Injury")
 
 
 grid.arrange(m1, m2, m3, ncol = 3 ,heights = .5) 
 
+gf_dhistogram(~AgeFirstConcussion, data = finalData, main = "AgeOfFirstConcussion") %>%
+  gf_dens()
+gf_dhistogram(~CurrentAge, data = finalData, main = "currentage") %>%
+  gf_dens()
 
 
 ##qualitative
-m4 <- gf_bar(~ PreseasonInjury, data = studydata, fill = c("darkred", "forestgreen"), main = "Number of Preseason Injuries")
+m4 <- gf_bar(~ PreseasonInjury, data = finalData, fill = c("darkred", "forestgreen"), main = "Number of Preseason Injuries")
 
-tally(~ Position, data = studydata)
+tally(~ Position, data = finalData)
 
-m5 <- gf_bar(~Season, data = studydata)
+m5 <- gf_bar(~Season, data = finalData)
 
 grid.arrange(m4, m5, ncol = 2 ,heights = .5) 
 
@@ -156,9 +161,15 @@ We will make the following comparisons in a bivariate manner:
 A ggpairs of all the relationships is shown below, and which we will use to identify their correlations as well as any cases of multicollinearity. If there is indeed multicollinearity, we can use VIF to determine which variables are responsible.
 
 ```{r}
-studydata1 <- select(studydata, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season")
-ggpairs(studydata1)
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "PreseasonInjury", "Position", "Season", "CurrentAge", "AgeFirstConcussion")
+ggpairs(finalData1)
+
 ```
+```{r}
+finalData1 <- filter(finalData1, PreseasonInjury == "No") ## our sample data
+#ggpairs(finalData1)
+```
+
 
 
 *Step 3: Model Building and Variable Selection - Choosing Variables, Checking/Evaluating Fit, and Final Model Criteria*
