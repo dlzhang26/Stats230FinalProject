@@ -97,7 +97,7 @@ Concussions have been a trending topic in football for the last few years as cur
 
 ## Variables
 
-Our response variables is Post-Injury Play Time. Our explanatory variables that we are using are amtGamesMissed, PreIPT, WeekOfInjury, AgeAtConcussion, PreseasonInjury, and Position. PreseasonInjury and Position are qualitative variables and amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are quantitative variables. 
+Our response variable is Post-Injury Play Time. Our explanatory variables that we are using are amtGamesMissed, PreIPT, WeekOfInjury, AgeAtConcussion, PreseasonInjury, and Position. PreseasonInjury and Position are qualitative variables and amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are quantitative variables. We recently added AgeAtConcussion, which is the age of the player during the game they sustained the concussion. 
 
 ## Step 1: Univariate analysis - descriptive stats/plots for each variable
 
