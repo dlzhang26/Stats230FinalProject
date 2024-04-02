@@ -35,7 +35,7 @@ options(digits=5)
 ```
 
 
-```{r include=FALSE}
+```{r, include=FALSE, warning = FALSE, echo = FALSE}
 ###############################################################################################
 #getwd() in console to find the directory where the csv file is stored on your computer
 #For your computer you need to change the path so you can reed the file
@@ -61,12 +61,12 @@ mergeData$Play.Time.After.Injury = parse_number(mergeData$Play.Time.After.Injury
 mergeData$Average.Playtime.Before.Injury = parse_number(mergeData$Average.Playtime.Before.Injury)
 ###############################################################################################
 ##rename variables
-nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, PreIPT = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed, GM12 = X2012.2013...Games.Missed, GM13 = X2013.2014...Games.Missed, GM14 = X2014.2015...Games.Missed, I12 = X2012.2013...Number.of.Injuries , I13 = X2013.2014...Number.of.Injuries, I14 = X2014.2015...Number.of.Injuries, TotalInjuries = Total.Number.of.Injuries..2012.2014., PosDuringInjury = Roles.during.injuries, DOB = Date.of.Birth, AgeFirstConcussion = Age.first.concussion..2012.2014., totalGamesMissed = Total.Games.Missed..2012.2014., TeamDurConcussion = Team.s..during.concussion.incidents.2012.2014, DOI = Date)
+nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, PreIPT = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed, GM12 = X2012.2013...Games.Missed, GM13 = X2013.2014...Games.Missed, GM14 = X2014.2015...Games.Missed, I12 = X2012.2013...Number.of.Injuries , I13 = X2013.2014...Number.of.Injuries, I14 = X2014.2015...Number.of.Injuries, TotalInjuries = Total.Number.of.Injuries..2012.2014., PosDuringInjury = Roles.during.injuries, DOB = Date.of.Birth, AgeAtConcussion = Age.first.concussion..2012.2014., totalGamesMissed = Total.Games.Missed..2012.2014., TeamDurConcussion = Team.s..during.concussion.incidents.2012.2014, DOI = Date)
 
 ###############################################################################################
 ## select variables 
 studyD <- nameData %>% 
-  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeFirstConcussion, Position)
+  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeAtConcussion, Position)
 
 ## getting the current age 
 # Convert DOB to date objects
@@ -88,92 +88,99 @@ studydata <- studyD %>%
 ## creating population and sample
 predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're predicting
 finalData <- filter(studydata, Season != "2014/2015") ## our sample data
+
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position")
 ```
-*Project Question/Aim*
+## Project Question/Aim
 
 Concussions have been a trending topic in football for the last few years as current and former players suffer the consequences of such a physical sport. We want to determine if there is a significant relationship between Post-Injury Play Time and our chosen predictor variables, and if the model derived from the first two years of data can predict a player’s Post-Injury Play Time in the third season. 
 
-*Variables*
+## Variables
 
-Our response variables is Post-Injury Play Time. Our explanatory variables that we are using are WeekOfInjury, Position, PreseasonInjury, Season, amtGamesMissed, and PreIPT. PreseasonInjury, Position, Season are qualitative variables and amtGamesMissed, PreIPT, WeekOfInjury are quantitative variables. 
+Our response variables is Post-Injury Play Time. Our explanatory variables that we are using are amtGamesMissed, PreIPT, WeekOfInjury, AgeAtConcussion, PreseasonInjury, and Position. PreseasonInjury and Position are qualitative variables and amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are quantitative variables. 
 
-*Step 1: Univariate analysis - descriptive stats/plots for each variable*
-RESPONSE VARIABLE: 
+## Step 1: Univariate analysis - descriptive stats/plots for each variable
+
+### RESPONSE VARIABLE: 
 Post-Injury Play Time - Descriptive statistics and a frequency histogram with a density plot are shown below. 
-```{r}
+```{r, warning = FALSE, echo = FALSE, fig.height = 2, fig.width = 3}
 ##PostIPT RESPONSE VARIABLE
-favstats(~PostIPT, data = finalData)
-gf_dhistogram(~PostIPT, data = finalData)%>%
+favstats(~PostIPT, data = finalData1)
+gf_dhistogram(~PostIPT, data = finalData1)%>%
   gf_dens()
 
 ```
 
-EXPLANATORY VARIABLES:
-WeekOfInjury, Position, PreseasonInjury, Season, amtGamesMissed, and PreIPT are shown below as frequency histograms. 
-```{r}
+### EXPLANATORY VARIABLES:
+amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are shown below as histograms. PreseasonInjury and Position are shown below as tallies.
+
+
+```{r, warning = FALSE, echo = FALSE}
 ##EXPLANATORY VARIABLES
 
 ## quantitative
 
-m1 <- gf_histogram(~amtGamesMissed, data = finalData)
+m1 <- gf_histogram(~amtGamesMissed, data = finalData1)
 
-m2 <- gf_dhistogram(~PreIPT, data = finalData) %>%
+m2 <- gf_dhistogram(~PreIPT, data = finalData1) %>%
   gf_dens()
 
-m3 <- gf_histogram(~WeekOfInjury, data = finalData, main = "Distribution of Week of Injury")
+m3 <- gf_histogram(~WeekOfInjury, data = finalData1)
 
-
-grid.arrange(m1, m2, m3, ncol = 3 ,heights = .5) 
-
-gf_dhistogram(~AgeFirstConcussion, data = finalData, main = "AgeOfFirstConcussion") %>%
+m4 <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = "AgeOfFirstConcussion") %>%
   gf_dens()
-gf_dhistogram(~CurrentAge, data = finalData, main = "currentage") %>%
-  gf_dens()
-
 
 ##qualitative
-m4 <- gf_bar(~ PreseasonInjury, data = finalData, fill = c("darkred", "forestgreen"), main = "Number of Preseason Injuries")
+m5 <- gf_bar(~ PreseasonInjury, data = finalData1, fill = c("pink", "lightgreen"), main = "Number of Preseason Injuries")
 
-tally(~ Position, data = finalData)
+m6 <- gf_bar(~ Position, data = finalData1, fill = c("lavender", "skyblue"), main = "Number of Preseason Injuries")
 
-m5 <- gf_bar(~Season, data = finalData)
-
-grid.arrange(m4, m5, ncol = 2 ,heights = .5) 
 
 ```
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
+grid.arrange(m1, m2, m3, ncol = 3 ) 
+```
 
-*Step 2: Compare variables in Bivariate Manner -  Stats, Plots, and Compare*
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
+grid.arrange(m4, m5, m6, ncol = 3 ) 
+```
+
+
+## Step 2: Compare variables in Bivariate Manner -  Stats, Plots, and Compare
+
+For step 2, we will first use GGpairs to compare each of our predictors (amtGamesMissed, PreIPT, WeekOfInjury, AgeAtConcussion, PreseasonInjury, and Position) with our response variable, PostIPT. This will help us compare each predictor with PostIPT. For two quantitative variable comparisons (amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion), we will represent the relationship with a scatterplot. For one qualitative and one quantitative variable (PreseasonInjury and Position), we will use box plots. GGpairs gives us the correlation between two quantitative variables, and we will use this to identify correlation as well as any cases of multicollinearity. If there is indeed multicollinearity, we can use VIF > 5 to determine which variables are responsible and remove variables accordingly.
 
 We will make the following comparisons in a bivariate manner:
 
-*Post-Injury Play-Time vs. Position.* We will represent this with a box plot, where the two categories are defense and offense. 
+### Post-Injury Play-Time vs. Position. 
+We will represent this with a box plot, where the two categories are defense and offense. 
 
-*Post-Injury Play-Time vs. Pre-Season Injury.* We will represent this with a box plot, in which the two categories are “No,” the player didn’t sustain an injury in the pre-season, and “Yes,” the player did sustain an injury in the pre-season. 
+### Post-Injury Play-Time vs. Pre-Season Injury.
+We will represent this with a box plot, in which the two categories are “No,” the player didn’t sustain an injury in the pre-season, and “Yes,” the player did sustain an injury in the pre-season. 
 
-*Post-Injury Play-Time vs. Season.* We will represent this with a box plot, in which the two categories are the 2012-2013 season and the 2013-2014 season. 
+### Post-Injury Play-Time vs. Post-Injury Play Time.
+We will represent this with a scatterplot. 
 
-*Post-Injury Play-Time vs. Post-Injury Play Time.* We will represent this with a scatterplot. 
+### Post-Injury Play-Time vs. AgeAtConcussion.
+We will represent this with a scatterplot.
 
-*Post-Injury Play-Time vs. Week of Injury.* We will represent this with a scatterplot.
+### Post-Injury Play-Time vs. Week of Injury.
+We will represent this with a scatterplot.
 
-*Post-Injury Play-Time vs. amtGamesMissed.* We will represent this with a scatterplot.
+### Post-Injury Play-Time vs. amtGamesMissed.
+We will represent this with a scatterplot.
 
-A ggpairs of all the relationships is shown below, and which we will use to identify their correlations as well as any cases of multicollinearity. If there is indeed multicollinearity, we can use VIF to determine which variables are responsible.
-
-```{r}
-finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury",  "CurrentAge", "AgeFirstConcussion", "PreseasonInjury", "Position", "Season")
-ggpairs(finalData1)
-
-```
-```{r}
-finalData1 <- filter(finalData1, PreseasonInjury == "No") ## our sample data
+```{r, warning = FALSE, echo = FALSE, fig.height = 6, fig.width = 10}
 ggpairs(finalData1)
 ```
-```{r}
-gf_point(AgeFirstConcussion~CurrentAge, data = finalData1)
-gf_boxplot(PostIPT~Position, data = finalData1)
-```
 
 
+## Step 3: Model Building and Variable Selection - Choosing Variables, Checking/Evaluating Fit, and Final Model Criteria
 
-*Step 3: Model Building and Variable Selection - Choosing Variables, Checking/Evaluating Fit, and Final Model Criteria*
+For step 3, we will create a model with the variables remaining from the previous step (those that are non-multicollinear). We will assess the model's appropriateness using residuals vs. fitted plots and normal qq-plots. If a variable does not meet the conditions, we will consider transforming the data (e.g., square root, log) and reassess. To evaluate the model fit, we will look for a high R-squared and low standard error.
+
+Next, we will use the best subset method for variable selection in R to determine the most appropriate model for each number of predictors. We chose this automated method because it selects the best model for the given number of predictors. We will look for a low Mallow's CP and a high Adjusted R-squared. Based on the output, we will select the model with the fewest predictors that have a high Adjusted R-squared and low Mallow's CP.
+
+We will also use AVplots to double-check if we missed any variables that provide significant information. Finally, with our chosen model, we will check the residuals vs. fitted plot, normal qq-plot, Adjusted R-squared, standard error, and p-values. If the conditions are not met, we will consider transforming the data and reassessing the conditions.
+
+If we end up with multiple models that are similar in terms of Mallow's CP, Adjusted R-squared, standard error, and number of predictors, we will perform a nested F-test to determine if the more complex model is worth the extra predictors.
