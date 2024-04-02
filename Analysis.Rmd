@@ -120,12 +120,14 @@ amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are shown below as his
 
 ## quantitative
 
-m1 <- gf_histogram(~amtGamesMissed, data = finalData1)
+m1 <- gf_dhistogram(~amtGamesMissed, data = finalData1)%>%
+  gf_dens()
 
 m2 <- gf_dhistogram(~PreIPT, data = finalData1) %>%
   gf_dens()
 
-m3 <- gf_histogram(~WeekOfInjury, data = finalData1)
+m3 <- gf_dhistogram(~WeekOfInjury, data = finalData1)%>%
+  gf_dens()
 
 m4 <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = "AgeOfFirstConcussion") %>%
   gf_dens()
