@@ -1,0 +1,191 @@
+---
+title: "Season's Information and Post Injury Play Time For NFL Players"
+author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
+date: "Friday, April 6, 2024"
+output:
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document: default
+---
+
+```{r include=FALSE}
+library(mosaic)
+library(GGally)
+require(tidyr)
+library(tidyverse)
+require(lattice)
+library(gridExtra)
+library(grid)
+library(leaps)
+library(lubridate) # finding age at a given date
+options(scipen=5)
+```
+
+```{r include=FALSE}
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+# knitr settings to control how R chunks work.
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small"    # slightly smaller font for code
+)
+trellis.par.set(theme=theme.mosaic())  
+options(digits=5)
+```
+
+
+```{r, include=FALSE, warning = FALSE, echo = FALSE}
+###############################################################################################
+#getwd() in console to find the directory where the csv file is stored on your computer
+#For your computer you need to change the path so you can reed the file
+#alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
+
+##Donna's computer
+#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+
+
+#For Kaitlyn's computer
+df1 <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class27/khuang27/StatsProjectFinal/HeadInjuredPlayers.csv")
+
+###############################################################################################
+##Merge
+## gets rid of players who had multiple injuries in the three years
+mergeData <- merge(x = df2, y = df1[!duplicated(df1$Player), ], by = "Player", all.x = TRUE)
+mergeData <- filter(mergeData, Reported.Injury.Type == "Concussion") ## filter so there's only concussions 
+
+## qual --> quant var
+mergeData$Play.Time.After.Injury = parse_number(mergeData$Play.Time.After.Injury)
+mergeData$Average.Playtime.Before.Injury = parse_number(mergeData$Average.Playtime.Before.Injury)
+###############################################################################################
+##rename variables
+nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, PreIPT = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed, GM12 = X2012.2013...Games.Missed, GM13 = X2013.2014...Games.Missed, GM14 = X2014.2015...Games.Missed, I12 = X2012.2013...Number.of.Injuries , I13 = X2013.2014...Number.of.Injuries, I14 = X2014.2015...Number.of.Injuries, TotalInjuries = Total.Number.of.Injuries..2012.2014., PosDuringInjury = Roles.during.injuries, DOB = Date.of.Birth, AgeAtConcussion = Age.first.concussion..2012.2014., totalGamesMissed = Total.Games.Missed..2012.2014., TeamDurConcussion = Team.s..during.concussion.incidents.2012.2014, DOI = Date)
+
+###############################################################################################
+## select variables 
+studyD <- nameData %>% 
+  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeAtConcussion, Position)
+
+## getting the current age 
+# Convert DOB to date objects
+studyD$DOB <- as.Date(as.character(studyD$DOB), format = "%d/%m/%Y")
+
+# Calculate current age
+given_date <- as.Date("2024-04-01")
+current_age_in_years <- as.numeric(interval(studyD$DOB, given_date) / dyears(2))
+studyD$CurrentAge <- round(current_age_in_years, 1)
+
+#############################################################################
+## this re-categorizes position to offense and defense
+studydata <- studyD %>% 
+    mutate(Position = case_when(
+    Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
+    Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
+
+#############################################################################
+## creating population and sample
+predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're predicting
+finalData <- filter(studydata, Season != "2014/2015") ## our sample data
+
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position")
+```
+
+## UNIVARIATE ANALYSIS
+
+### RESPONSE VARIABLE: 
+Post-Injury Play Time - Descriptive statistics and a frequency histogram with a density plot are shown below. 
+```{r, warning = FALSE, echo = FALSE, fig.height = 2, fig.width = 3}
+##PostIPT RESPONSE VARIABLE
+favstats(~PostIPT, data = finalData1)
+gf_dhistogram(~PostIPT, data = finalData1)%>%
+  gf_dens()
+
+```
+
+### EXPLANATORY VARIABLES:
+amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are shown below as histograms. PreseasonInjury and Position are shown below as tallies.
+
+```{r, warning = FALSE, echo = FALSE}
+##EXPLANATORY VARIABLES
+
+## quantitative
+
+m1 <- gf_dhistogram(~amtGamesMissed, data = finalData1)%>%
+  gf_dens()
+
+m2 <- gf_dhistogram(~PreIPT, data = finalData1) %>%
+  gf_dens()
+
+m3 <- gf_dhistogram(~WeekOfInjury, data = finalData1)%>%
+  gf_dens()
+
+m4 <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = "AgeOfFirstConcussion") %>%
+  gf_dens()
+
+##qualitative
+m5 <- gf_bar(~ PreseasonInjury, data = finalData1, fill = c("pink", "lightgreen"), main = "Number of Preseason Injuries")
+
+m6 <- gf_bar(~ Position, data = finalData1, fill = c("lavender", "skyblue"), main = "Number of Preseason Injuries")
+
+
+```
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
+grid.arrange(m1, m2, m3, ncol = 3 ) 
+```
+
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
+grid.arrange(m4, m5, m6, ncol = 3 ) 
+```
+
+## BIVARIATE ANALYSIS
+
+### Post-Injury Play-Time vs. Position. 
+We will represent this with a box plot, where the two categories are defense and offense. 
+
+```{r}
+gf_boxplot(PostIPT ~ Position, data = finalData1)
+```
+
+
+### Post-Injury Play-Time vs. Pre-Season Injury.
+We will represent this with a box plot, in which the two categories are “No,” the player didn’t sustain an injury in the pre-season, and “Yes,” the player did sustain an injury in the pre-season. 
+
+```{r}
+gf_boxplot(PostIPT ~ PreseasonInjury, data = finalData1)
+```
+
+
+### Post-Injury Play-Time vs. Pre-Injury Play Time.
+We will represent this with a scatterplot. 
+
+```{r}
+gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
+  gf_lm()
+```
+
+### Post-Injury Play-Time vs. AgeAtConcussion.
+We will represent this with a scatterplot.
+
+```{r}
+gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
+  gf_lm()
+```
+
+### Post-Injury Play-Time vs. Week of Injury.
+We will represent this with a scatterplot.
+
+```{r}
+gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
+  gf_lm()
+```
+
+### Post-Injury Play-Time vs. amtGamesMissed.
+We will represent this with a scatterplot.
+
+```{r}
+gf_point(PostIPT ~ amtGamesMissed, data = finalData1)%>%
+  gf_lm()
+```
+
