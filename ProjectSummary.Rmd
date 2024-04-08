@@ -163,6 +163,9 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
   gf_lm()
+PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
+mplot(PostIPTvsPreIPT, which = 1)
+mplot(PostIPTvsPreIPT, which = 2)
 ```
 
 ### Post-Injury Play-Time vs. AgeAtConcussion.
@@ -171,6 +174,9 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
   gf_lm()
+PostIPTvsAge <- lm(PostIPT ~ AgeAtConcussion, data = finalData1)
+mplot(PostIPTvsAge, which = 1)
+mplot(PostIPTvsAge, which = 2)
 ```
 
 ### Post-Injury Play-Time vs. Week of Injury.
@@ -179,6 +185,9 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
   gf_lm()
+PostIPTvsWeekofInjury <- lm(PostIPT ~ WeekOfInjury, data = finalData1)
+mplot(PostIPTvsWeekofInjury, which = 1)
+mplot(PostIPTvsWeekofInjury, which = 2)
 ```
 
 ### Post-Injury Play-Time vs. amtGamesMissed.
@@ -187,5 +196,8 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ amtGamesMissed, data = finalData1)%>%
   gf_lm()
+PostIPTvs.GamesMissed <- lm(PostIPT ~ amtGamesMissed, data = finalData1)
+mplot(PostIPTvs.GamesMissed, which = 1)
+mplot(PostIPTvs.GamesMissed, which = 2)
 ```
 
