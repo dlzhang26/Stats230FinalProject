@@ -166,6 +166,7 @@ We will represent this with a scatterplot.
 gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
   gf_lm()%>%
   gf_labs(title = "Post-Injury Play Time vs. Pre-Injury Play Time")
+
 PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
 mplot(PostIPTvsPreIPT, which = 1)
 mplot(PostIPTvsPreIPT, which = 2)
@@ -202,6 +203,7 @@ We will represent this with a scatterplot.
 gf_point(PostIPT ~ amtGamesMissed, data = finalData1)%>%
   gf_lm()%>%
   gf_labs(title = "Post-Injury Play Time vs. Amount of Games Missed")
+
 PostIPTvs.GamesMissed <- lm(PostIPT ~ amtGamesMissed, data = finalData1)
 mplot(PostIPTvs.GamesMissed, which = 1)
 mplot(PostIPTvs.GamesMissed, which = 2)
