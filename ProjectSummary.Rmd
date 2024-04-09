@@ -145,7 +145,8 @@ grid.arrange(m4, m5, m6, ncol = 3 )
 We will represent this with a box plot, where the two categories are defense and offense. 
 
 ```{r}
-gf_boxplot(PostIPT ~ Position, data = finalData1)
+gf_boxplot(PostIPT ~ Position, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. Position")
 ```
 
 
@@ -153,7 +154,8 @@ gf_boxplot(PostIPT ~ Position, data = finalData1)
 We will represent this with a box plot, in which the two categories are “No,” the player didn’t sustain an injury in the pre-season, and “Yes,” the player did sustain an injury in the pre-season. 
 
 ```{r}
-gf_boxplot(PostIPT ~ PreseasonInjury, data = finalData1)
+gf_boxplot(PostIPT ~ PreseasonInjury, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. Pre-Season Injury")
 ```
 
 
@@ -162,7 +164,8 @@ We will represent this with a scatterplot.
 
 ```{r}
 gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
-  gf_lm()
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Pre-Injury Play Time")
 PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
 mplot(PostIPTvsPreIPT, which = 1)
 mplot(PostIPTvsPreIPT, which = 2)
@@ -173,7 +176,8 @@ We will represent this with a scatterplot.
 
 ```{r}
 gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
-  gf_lm()
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Age at Concussion")
 PostIPTvsAge <- lm(PostIPT ~ AgeAtConcussion, data = finalData1)
 mplot(PostIPTvsAge, which = 1)
 mplot(PostIPTvsAge, which = 2)
@@ -184,7 +188,8 @@ We will represent this with a scatterplot.
 
 ```{r}
 gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
-  gf_lm()
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Week of Injury")
 PostIPTvsWeekofInjury <- lm(PostIPT ~ WeekOfInjury, data = finalData1)
 mplot(PostIPTvsWeekofInjury, which = 1)
 mplot(PostIPTvsWeekofInjury, which = 2)
@@ -195,7 +200,8 @@ We will represent this with a scatterplot.
 
 ```{r}
 gf_point(PostIPT ~ amtGamesMissed, data = finalData1)%>%
-  gf_lm()
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Amount of Games Missed")
 PostIPTvs.GamesMissed <- lm(PostIPT ~ amtGamesMissed, data = finalData1)
 mplot(PostIPTvs.GamesMissed, which = 1)
 mplot(PostIPTvs.GamesMissed, which = 2)
