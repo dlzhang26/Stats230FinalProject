@@ -147,6 +147,7 @@ We will represent this with a box plot, where the two categories are defense and
 ```{r}
 gf_boxplot(PostIPT ~ Position, data = finalData1)%>%
   gf_labs(title = "Post-Injury Play-Time vs. Position")
+favstats(PostIPT ~ Position, data = finalData1)
 ```
 
 
@@ -156,6 +157,7 @@ We will represent this with a box plot, in which the two categories are â€œNo,â€
 ```{r}
 gf_boxplot(PostIPT ~ PreseasonInjury, data = finalData1)%>%
   gf_labs(title = "Post-Injury Play-Time vs. Pre-Season Injury")
+favstats(PostIPT ~ PreseasonInjury, data = finalData1)
 ```
 
 
@@ -170,6 +172,7 @@ gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
 PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
 mplot(PostIPTvsPreIPT, which = 1)
 mplot(PostIPTvsPreIPT, which = 2)
+cor(PostIPT ~ PreIPT, data = finalData1, use = "pairwise")
 ```
 
 ### Post-Injury Play-Time vs. AgeAtConcussion.
@@ -182,6 +185,7 @@ gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
 PostIPTvsAge <- lm(PostIPT ~ AgeAtConcussion, data = finalData1)
 mplot(PostIPTvsAge, which = 1)
 mplot(PostIPTvsAge, which = 2)
+cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
 ```
 
 ### Post-Injury Play-Time vs. Week of Injury.
@@ -194,6 +198,7 @@ gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
 PostIPTvsWeekofInjury <- lm(PostIPT ~ WeekOfInjury, data = finalData1)
 mplot(PostIPTvsWeekofInjury, which = 1)
 mplot(PostIPTvsWeekofInjury, which = 2)
+cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
 ```
 
 ### Post-Injury Play-Time vs. amtGamesMissed.
@@ -207,5 +212,6 @@ gf_point(PostIPT ~ amtGamesMissed, data = finalData1)%>%
 PostIPTvs.GamesMissed <- lm(PostIPT ~ amtGamesMissed, data = finalData1)
 mplot(PostIPTvs.GamesMissed, which = 1)
 mplot(PostIPTvs.GamesMissed, which = 2)
+cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```
 
