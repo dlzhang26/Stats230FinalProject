@@ -42,13 +42,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-df1 <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("/home/class27/khuang27/StatsProjectFinal/HeadInjuredPlayers.csv")
+#df1 <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class27/khuang27/StatsProjectFinal/HeadInjuredPlayers.csv")
 
 ###############################################################################################
 ##Merge
