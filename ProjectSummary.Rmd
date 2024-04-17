@@ -42,8 +42,8 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
@@ -51,8 +51,8 @@ options(digits=5)
 #df2 <- read.csv("/home/class27/khuang27/StatsProjectFinal/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
-df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("/home/class26/anwobi26/Stats230_proj/HeadInjuredPlayers.csv")
+#df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class26/anwobi26/Stats230_proj/HeadInjuredPlayers.csv")
 
 ###############################################################################################
 ##Merge
@@ -91,9 +91,11 @@ studydata <- studyD %>%
 #############################################################################
 ## creating population and sample
 predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're predicting
+finalData <- filter(finalData, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
 finalData <- filter(studydata, Season != "2014/2015") ## our sample data
 
-finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position")
+
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position" )
 ```
 
 ## UNIVARIATE ANALYSIS
@@ -128,9 +130,10 @@ m3 <- gf_dhistogram(~WeekOfInjury, data = finalData1)%>%
 m4 <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = "AgeOfFirstConcussion") %>%
   gf_dens()
 
-##qualitative
-m5 <- gf_bar(~ PreseasonInjury, data = finalData1, fill = c("pink", "lightgreen"), main = "Number of Preseason Injuries")
+m5 <- gf_dhistogram(~ TotalSnaps, data = finalData1)%>%
+  gf_dens()
 
+##qualitative
 m6 <- gf_bar(~ Position, data = finalData1, fill = c("lavender", "skyblue"), main = "Number of Preseason Injuries")
 
 
@@ -140,7 +143,7 @@ grid.arrange(m1, m2, m3, ncol = 3 )
 ```
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
-grid.arrange(m4, m5, m6, ncol = 3 ) 
+grid.arrange( m5, m4, m6, ncol = 3 ) 
 ```
 
 ## BIVARIATE ANALYSIS
@@ -151,17 +154,27 @@ We will represent this with a box plot, where the two categories are defense and
 ```{r}
 gf_boxplot(PostIPT ~ Position, data = finalData1)%>%
   gf_labs(title = "Post-Injury Play-Time vs. Position")
+
+gf_dens( ~ PostIPT, color = ~Position, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. Position")
 favstats(PostIPT ~ Position, data = finalData1)
 ```
 
 
-### Post-Injury Play-Time vs. Pre-Season Injury.
-We will represent this with a box plot, in which the two categories are “No,” the player didn’t sustain an injury in the pre-season, and “Yes,” the player did sustain an injury in the pre-season. 
+### Post-Injury Play-Time vs. Total Snaps.
+We will represent this with a scatterplot. 
 
 ```{r}
-gf_boxplot(PostIPT ~ PreseasonInjury, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. Pre-Season Injury")
-favstats(PostIPT ~ PreseasonInjury, data = finalData1)
+
+
+gf_point(PostIPT ~ TotalSnaps, data = finalData1)%>%
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play-Time vs. Total Snaps")
+
+PostIPTvsTotalSnaps <- lm(PostIPT ~ PreIPT, data = finalData1)
+mplot(PostIPTvsTotalSnaps, which = 1)
+mplot(PostIPTvsTotalSnaps, which = 2)
+cor(PostIPT ~ TotalSnaps, data = finalData1, use = "pairwise")
 ```
 
 
@@ -192,6 +205,19 @@ mplot(PostIPTvsAge, which = 2)
 cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
 ```
 
+```{r}
+gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Age at Concussion")
+PostIPTvsAge <- lm(PostIPT ~ AgeAtConcussion, data = finalData1)
+mplot(PostIPTvsAge, which = 1)
+mplot(PostIPTvsAge, which = 2)
+msummary(PostIPTvsAge)
+cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
+```
+
+
+
 ### Post-Injury Play-Time vs. Week of Injury.
 We will represent this with a scatterplot.
 
@@ -218,4 +244,22 @@ mplot(PostIPTvs.GamesMissed, which = 1)
 mplot(PostIPTvs.GamesMissed, which = 2)
 cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```
+
+
+##Final Model (As of now)
+```{r}
+#kitchen sink
+ggpairs(finalData1)
+
+```
+```{r}
+
+##will remove Total snaps bc it is highly correlated with preInjury play time. 
+finalData1 <- select(finalData, "PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position")
+
+
+fm.full <- lm(PostIPT ~ . , data = finalData1)
+anova(fm.full)
+```
+
 
