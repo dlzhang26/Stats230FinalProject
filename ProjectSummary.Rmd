@@ -263,6 +263,9 @@ anova(fm.full)
 
 mod1 <- lm(PostIPT ~ PreIPT + Position, data = finalData1)
 anova(mod1)
+msummary(mod1)
+mplot(mod1, which = 1 )
+mplot(mod1, which = 2 )
 ```
 
 
