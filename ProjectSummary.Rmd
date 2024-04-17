@@ -260,6 +260,9 @@ finalData1 <- select(finalData, "PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConc
 
 fm.full <- lm(PostIPT ~ . , data = finalData1)
 anova(fm.full)
+
+mod1 <- lm(PostIPT ~ PreIPT + Position, data = finalData1)
+anova(mod1)
 ```
 
 
