@@ -266,6 +266,10 @@ anova(mod1)
 msummary(mod1)
 mplot(mod1, which = 1 )
 mplot(mod1, which = 2 )
+mplot(mod1, which = 3 )
+mplot(mod1, which = 4)
+mplot(mod1, which = 5 )
+mplot(mod1, which = 6 )
 ```
 
 
