@@ -97,7 +97,7 @@ finalData <- filter(finalData, PreseasonInjury == "No") ## filters out players w
 finalData <- filter(studydata, Season != "2014/2015") ## our sample data
 
 
-finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position" )
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Player")
 ```
 
 ## UNIVARIATE ANALYSIS
@@ -250,17 +250,18 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 
 ##Final Model (As of now)
 ```{r}
-#kitchen sink
-ggpairs(finalData1)
+
+#ggpairs(finalData1)
 
 ```
+
 ```{r}
 
-##will remove Total snaps bc it is highly correlated with preInjury play time. 
-finalData1 <- select(finalData, "PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position")
+
+finalData1 <- select(finalData, "PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position", "Player")
 
 
-fm.full <- lm(PostIPT ~ . , data = finalData1)
+fm.full <- lm(PostIPT ~ PreIPT +WeekOfInjury + AgeAtConcussion + Position , data = finalData1)
 anova(fm.full)
 
 modA <- lm(PostIPT ~ PreIPT, data = finalData1)
@@ -286,9 +287,23 @@ finalDataAug <- augment(mod1)
 
 ```
 
+
 ```{r}
 
-mod2 <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )## need to describe who they were and why you are removing (removed 1 person)
+mod2a <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )## need to describe who they were and why you are removing -- this removed 2
+anova(mod2a)
+msummary(mod2a)
+mplot(mod2a, which = 1 )
+mplot(mod2a, which = 2 )
+mplot(mod2a, which = 4 )
+mplot(mod2a, which = 5 )
+mplot(mod2a, which = 6 )
+
+```
+
+```{r}
+
+mod2 <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 40 )## need to describe who they were and why you are removing -- this removed 6. might be too many
 anova(mod2)
 msummary(mod2)
 mplot(mod2, which = 1 )
