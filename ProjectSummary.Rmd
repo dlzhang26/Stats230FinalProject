@@ -274,9 +274,9 @@ anova(mod1)
 msummary(mod1)
 mplot(mod1, which = 1 )
 mplot(mod1, which = 2 )
-#mplot(mod1, which = 4)
-#mplot(mod1, which = 5 )
-#mplot(mod1, which = 6 )
+mplot(mod1, which = 4)
+mplot(mod1, which = 5 )
+mplot(mod1, which = 6 )
 
 ```
 ```{r}
@@ -288,16 +288,17 @@ finalDataAug <- augment(mod1)
 
 ```{r}
 
-mod2 <- lm(PostIPT ~ PreIPT + Position, data = finalData1, subset =  abs(resid(mod1)) < 40 )## need to describe who they were and why you are removing (removed 1 person)
+mod2 <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )## need to describe who they were and why you are removing (removed 1 person)
 anova(mod2)
 msummary(mod2)
 mplot(mod2, which = 1 )
 mplot(mod2, which = 2 )
-#mplot(mod2, which = 4)
-#mplot(mod2, which = 5 )
-#mplot(mod2, which = 6 )
+mplot(mod2, which = 4 )
+mplot(mod2, which = 5 )
+mplot(mod2, which = 6 )
 
 ```
+
 
 
 
