@@ -44,13 +44,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-#df1 <- read.csv("/home/class27/khuang27/StatsProjectFinal/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("/home/class27/khuang27/StatsProjectFinal/HeadInjuredPlayers.csv")
+df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
 #df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
@@ -261,12 +261,6 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```{r}
 
 #ggpairs(finalData1)
-
-```
-
-```{r}
-
-
 finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position")
 
 
@@ -278,6 +272,9 @@ anova(modA)
 msummary(modA)
 mplot(modA, which = 1 )
 mplot(modA, which = 2 )
+```
+
+```{r}
 
 mod1 <- lm(PostIPT ~ PreIPT + Position, data = finalData1)
 anova(mod1)
@@ -297,7 +294,7 @@ finalDataAug <- augment(mod1)
 
 
 ```{r}
-
+## make new data file with removed outliers. 
 mod2a <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )## need to describe who they were and why you are removing -- this removed 2
 mod2aRemoved <- filter(finalDataAug, abs(.resid) > 50 )
 
@@ -323,6 +320,17 @@ mplot(mod2, which = 5 )
 mplot(mod2, which = 6 )
 
 ```
+
+
+```{r}
+#fmfullll <- lm(PostIPT ~ PreIPT + Position + WeekOfInjury + AgeAtConcussio, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )
+
+#anova(fmfullll)
+#msummary(fmfullll)
+#mplot(fmfullll, which = 1 )
+#mplot(fmfullll, which = 2 )
+```
+
 
 
 
