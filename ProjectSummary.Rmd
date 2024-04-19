@@ -108,14 +108,29 @@ predictData <-filter(studydata, Season == "2014/2015") ## data for the season we
 
 #############################################################################
 
-studydata <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
+
+
+
+```
+
+## UNIVARIATE ANALYSIS
+
+###Remove variable
+```{r}
+tally(~PreseasonInjury,data = studydata)
+
+gf_bar(~PreseasonInjury,data = studydata ) 
+
+
+studydata <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury (16) bc not enough observations. 
+
+
 finalData <- filter(studydata, Season != "2014/2015") ## our sample data
 
 
 finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Conference", "Team", "OppTeamC", "OnWinningTeam")
 ```
 
-## UNIVARIATE ANALYSIS
 
 ### RESPONSE VARIABLE: 
 Post-Injury Play Time - Descriptive statistics and a frequency histogram with a density plot are shown below. 
@@ -151,7 +166,9 @@ m5 <- gf_dhistogram(~ TotalSnaps, data = finalData1)%>%
   gf_dens()
 
 ##qualitative
-m6 <- gf_bar(~ Position, data = finalData1, fill = c("lavender", "skyblue"), main = "Number of Preseason Injuries")
+m6 <- gf_bar(~ Position, data = finalData1, fill = c("lavender", "skyblue"))
+
+
 
 
 ```
@@ -292,13 +309,13 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```{r}
 
 #ggpairs(finalData1)
-finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position")
+finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position", "amtGamesMissed")
 
 
-fm.full <- lm(PostIPT ~ PreIPT +WeekOfInjury + AgeAtConcussion + Position , data = finalData1)
+fm.full <- lm(PostIPT ~ PreIPT + WeekOfInjury + AgeAtConcussion + Position + amtGamesMissed , data = finalData1)
 anova(fm.full)
 
-modA <- lm(PostIPT ~ PreIPT, data = finalData1)
+modA <- lm(PostIPT ~ PreIPT + amtGamesMissed + Position, data = finalData1)
 anova(modA)
 msummary(modA)
 mplot(modA, which = 1 )
@@ -307,7 +324,7 @@ mplot(modA, which = 2 )
 
 ```{r}
 
-mod1 <- lm(PostIPT ~ PreIPT + Position, data = finalData1)
+mod1 <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalData1)
 anova(mod1)
 msummary(mod1)
 mplot(mod1, which = 1 )
@@ -326,7 +343,7 @@ finalDataAug <- augment(mod1)
 
 ```{r}
 ## make new data file with removed outliers. 
-mod2a <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )## need to describe who they were and why you are removing -- this removed 2
+mod2a <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalDataAug, subset =  finalDataAug$.resid > -50 )## need to describe who they were and why you are removing -- this removed 2
 mod2aRemoved <- filter(finalDataAug, abs(.resid) > 50 )
 
 anova(mod2a)
@@ -341,7 +358,7 @@ mplot(mod2a, which = 6 )
 
 ```{r}
 
-mod2 <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 40 )## need to describe who they were and why you are removing -- this removed 6. might be too many
+mod2 <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 40 )## need to describe who they were and why you are removing -- this removed 6. might be too many
 anova(mod2)
 msummary(mod2)
 mplot(mod2, which = 1 )
