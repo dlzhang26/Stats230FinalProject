@@ -72,7 +72,7 @@ nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After
 ###############################################################################################
 ## select variables 
 studyD <- nameData %>% 
-  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeAtConcussion, Position)
+  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeAtConcussion, Position, Team)
 
 ## getting the current age 
 # Convert DOB to date objects
@@ -89,15 +89,24 @@ studydata <- studyD %>%
     mutate(Position = case_when(
     Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
     Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
+#############################################################################
+## this re-categorizes team to 2 conferences
+studydata <- studydata %>% 
+    mutate(Team = case_when( 
+      Team %in% c("Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers", "Buffalo Bills", "New England Patriots", "New York Jets" , "Miami Dolphins", "Houston Texans", "Jacksonville Jaguars", "Tennessee Titans", "Indianapolis Colts", "Denver Broncos", "Kansas City Chiefs", "San Diego Chargers", "Oakland Raiders") ~ "AFC",
+    Team %in% c("Chicago Bears", "Detroit Lions", "Green Bay Packers", "Minnesota Vikings", "New York Giants", "Philadelphia Eagles", "Washington Redskins", "Dallas Cowboys", "Carolina Panthers", "Tampa Bay Buccaneers", "New Orleans Saints", "Atlanta Falcons", "Arizona Cardinals", "Seattle Seahawks", "San Francisco 49ers", "St. Louis Ram") ~ "NFC"))
 
 #############################################################################
 ## creating population and sample
-predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're predicting
-finalData <- filter(finalData, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
+predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're 
+
+#############################################################################
+
+studydata <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
 finalData <- filter(studydata, Season != "2014/2015") ## our sample data
 
 
-finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Player")
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Team")
 ```
 
 ## UNIVARIATE ANALYSIS
@@ -258,7 +267,7 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```{r}
 
 
-finalData1 <- select(finalData, "PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position", "Player")
+finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position")
 
 
 fm.full <- lm(PostIPT ~ PreIPT +WeekOfInjury + AgeAtConcussion + Position , data = finalData1)
@@ -284,13 +293,14 @@ mplot(mod1, which = 6 )
 
 finalDataAug <- augment(mod1) 
 
-
 ```
 
 
 ```{r}
 
 mod2a <- lm(PostIPT ~ PreIPT + Position, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )## need to describe who they were and why you are removing -- this removed 2
+mod2aRemoved <- filter(finalDataAug, abs(.resid) > 50 )
+
 anova(mod2a)
 msummary(mod2a)
 mplot(mod2a, which = 1 )
