@@ -113,7 +113,7 @@ predictData <-filter(studydata, Season == "2014/2015") ## data for the season we
 
 ```
 
-## UNIVARIATE ANALYSIS
+
 
 ###Remove variable
 ```{r}
@@ -130,6 +130,9 @@ finalData <- filter(studydata, Season != "2014/2015") ## our sample data
 
 finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Conference", "Team", "OppTeamC", "OnWinningTeam")
 ```
+
+
+## UNIVARIATE ANALYSIS
 
 
 ### RESPONSE VARIABLE: 
@@ -312,8 +315,9 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position", "amtGamesMissed")
 
 
-fm.full <- lm(PostIPT ~ PreIPT + WeekOfInjury + AgeAtConcussion + Position + amtGamesMissed , data = finalData1)
+fm.full <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + Position , data = finalData1)
 anova(fm.full)
+
 
 modA <- lm(PostIPT ~ PreIPT + amtGamesMissed + Position, data = finalData1)
 anova(modA)
@@ -322,64 +326,71 @@ mplot(modA, which = 1 )
 mplot(modA, which = 2 )
 ```
 
-```{r}
+```{r, echo = FALSE, fig.height = 4, fig.width = 3}
 
 mod1 <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalData1)
 anova(mod1)
 msummary(mod1)
-mplot(mod1, which = 1 )
-mplot(mod1, which = 2 )
-mplot(mod1, which = 4)
-mplot(mod1, which = 5 )
-mplot(mod1, which = 6 )
+mplot(mod1, which = 1 :2 )
 
+
+##2 outleirs - 25, 54
 ```
 ```{r}
 
-finalDataAug <- augment(mod1) 
-
-```
 
 
-```{r}
-## make new data file with removed outliers. 
-mod2a <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalDataAug, subset =  finalDataAug$.resid > -50 )## need to describe who they were and why you are removing -- this removed 2
-mod2aRemoved <- filter(finalDataAug, abs(.resid) > 50 )
-
-anova(mod2a)
-msummary(mod2a)
-mplot(mod2a, which = 1 )
-mplot(mod2a, which = 2 )
-mplot(mod2a, which = 4 )
-mplot(mod2a, which = 5 )
-mplot(mod2a, which = 6 )
-
-```
-
-```{r}
-
-mod2 <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 40 )## need to describe who they were and why you are removing -- this removed 6. might be too many
-anova(mod2)
-msummary(mod2)
-mplot(mod2, which = 1 )
-mplot(mod2, which = 2 )
-mplot(mod2, which = 4 )
-mplot(mod2, which = 5 )
-mplot(mod2, which = 6 )
+FDfiltered <- finalData1[-c(25, 54), ]
 
 ```
 
 
 ```{r}
-#fmfullll <- lm(PostIPT ~ PreIPT + Position + WeekOfInjury + AgeAtConcussio, data = finalDataAug, subset =  abs(finalDataAug$.resid) < 50 )
+full  <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + Position , data = FDfiltered)
+anova(full)
+three  <- lm(PostIPT ~ PreIPT + amtGamesMissed + Position , data = FDfiltered)
+twoPred  <- lm(PostIPT ~ PreIPT + amtGamesMissed , data = FDfiltered)
 
-#anova(fmfullll)
-#msummary(fmfullll)
-#mplot(fmfullll, which = 1 )
-#mplot(fmfullll, which = 2 )
+onePred  <- lm(PostIPT ~ PreIPT  , data = FDfiltered)
+
+anova(onePred, twoPred, three, full)
+
+anova(twoPred)
+mplot(twoPred, which = 1 )
+mplot(twoPred, which = 2 )
+mplot(twoPred, which = 4)
+mplot(twoPred, which = 5 )
+mplot(twoPred, which = 6 )
 ```
 
+## Final Model: 2 predictors, with PreIPT and amtGamesMissed
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 3}
+anova(twoPred)
+msummary(twoPred)
+mplot(twoPred, which = 1:2 )
 
+mplot(twoPred, which = 4)
 
+#car::vif(fm.full)
+```
+MLR:
 
+First we ran the kitchen sink model and fond 2 predictors (PreIPT(p-value for t-test = <2e-16) and amtGamesMissed(p-value for t-test = 0.014)) to be significant. We ran VIF on the kitchen sink to see if there were any issues with multicolinarity between our predictions, and all of the VIF < 5, so we had no issues with multicolinarity between our predictors. We then ran a 2 predictor model with only the significant predictors (PreIPT and amtGamesMissed). For equal variance, there were 2 observations with high residuals that we decided to remove - Cecil Shorts and Devin Hester. Cecil Shorts had injuries from the past that he might have been recovering from, which might be why he had higher post injury play time than pre injury play time. Devin Hester is considered to be the greatest return specialist of all time, which might be why he also had significantly more play time post injury than pre injury. 
+
+After removing the two outliers from the dataset, we ran a nested f-test to see if the two predictor model was significantly better than the one predictor model. Position was close to being a significant predictor(p-value = 0.086), so we ran a nested f-test with one(PreIPT), two(PreIPT and amtGamesMissed), three predictors(PreIPT,amtGamesMissed, and position) and the full model(PreIPT,amtGamesMissed, position, WeekOfInjury, and AgeAtConcussion) to see how many variables are worth adding. For the nested f-test, only the two predictor model was significant (p-value = 0.012) so we decided to go with the two predictor model with outliers removed for our final model. 
+
+Conditions: 
+
+For equal variance, this condition looks good enough with no apparent pattern and one unusual point. We used cook's distance to how unusual the point is and if we should remove it. No cook's distance was above 0.5 to be considered an moderately influential, so we decided not to remove the point. For normality, the qq plot looks good enough, with most of the points on the theoretical line and the ends tapering off. 
+
+Final Model (as of now):
+
+Our current model is PostIPT(hat) = 9.4480 + 0.8325(PreIPT) - 3.5095(amtGamesMissed). The Rsquared is 47.6% and the standard error is 17.9. 
+
+```{r}
+pred <- makeFun(twoPred)
+
+pred(PreIPT = 32, amtGamesMissed = 0)
+
+```
 
