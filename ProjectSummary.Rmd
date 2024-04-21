@@ -86,7 +86,7 @@ studyD$CurrentAge <- round(current_age_in_years, 1)
 #############################################################################
 ## this re-categorizes position to offense and defense
 studydata <- studyD %>% 
-    mutate(Position = case_when(
+    mutate(PositionC = case_when(
     Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
     Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
 #############################################################################
@@ -108,7 +108,7 @@ predictData <-filter(studydata, Season == "2014/2015") ## data for the season we
 
 #############################################################################
 
-
+studydata <- filter(studydata, Season != "2014/2015") ## our sample data
 
 
 ```
@@ -122,13 +122,10 @@ tally(~PreseasonInjury,data = studydata)
 gf_bar(~PreseasonInjury,data = studydata ) 
 
 
-studydata <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury (16) bc not enough observations. 
+finalData <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
 
 
-finalData <- filter(studydata, Season != "2014/2015") ## our sample data
-
-
-finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Conference", "Team", "OppTeamC", "OnWinningTeam")
+finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "TotalSnaps", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position", "Conference", "Team", "OppTeamC", "OnWinningTeam", "PositionC")
 ```
 
 
@@ -169,7 +166,7 @@ m5 <- gf_dhistogram(~ TotalSnaps, data = finalData1)%>%
   gf_dens()
 
 ##qualitative
-m6 <- gf_bar(~ Position, data = finalData1, fill = c("lavender", "skyblue"))
+m6 <- gf_bar(~ PositionC, data = finalData1, fill = c("lavender", "skyblue"))
 
 
 
@@ -181,6 +178,18 @@ grid.arrange(m1, m2, m3, ncol = 3 )
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
 grid.arrange( m5, m4, m6, ncol = 3 ) 
+```
+```{r}
+tally(~Position, data = finalData1 , format = "perc")
+tally(~Position, data = finalData1 )
+tally(~PositionC, data = finalData1 )
+tally(~PositionC, data = finalData1 , format = "perc")
+
+favstats(~WeekOfInjury, data = finalData1)
+
+favstats(~amtGamesMissed, data = finalData1)
+favstats(~AgeAtConcussion, data = finalData1)
+favstats(~PreIPT, data = finalData1)
 ```
 
 
@@ -204,22 +213,22 @@ gf_boxplot(PostIPT ~ OppTeamC, data = finalData1)
 gf_dens( ~ PostIPT, color = ~OppTeamC, data = finalData1)
 favstats(PostIPT ~ OppTeamC, data = finalData1)
 
-OppMod <- lm(PostIPT ~  PreIPT + Position + OnWinningTeam + Conference + OppTeamC, data = finalData1)
+OppMod <- lm(PostIPT ~  PreIPT + PositionC + OnWinningTeam + Conference + OppTeamC, data = finalData1)
 anova(OppMod)
 ```
 
 ## BIVARIATE ANALYSIS
 
-### Post-Injury Play-Time vs. Position. 
+### Post-Injury Play-Time vs. PositionC. 
 We will represent this with a box plot, where the two categories are defense and offense. 
 
 ```{r}
-gf_boxplot(PostIPT ~ Position, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. Position")
+gf_boxplot(PostIPT ~ PositionC, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. PositionC")
 
-gf_dens( ~ PostIPT, color = ~Position, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. Position")
-favstats(PostIPT ~ Position, data = finalData1)
+gf_dens( ~ PostIPT, color = ~PositionC, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. PositionC")
+favstats(PostIPT ~ PositionC, data = finalData1)
 ```
 
 
@@ -312,14 +321,14 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```{r}
 
 #ggpairs(finalData1)
-finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "Position", "amtGamesMissed")
+finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissed")
 
 
-fm.full <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + Position , data = finalData1)
+fm.full <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + PositionC , data = finalData1)
 anova(fm.full)
 
 
-modA <- lm(PostIPT ~ PreIPT + amtGamesMissed + Position, data = finalData1)
+modA <- lm(PostIPT ~ PreIPT + amtGamesMissed + PositionC, data = finalData1)
 anova(modA)
 msummary(modA)
 mplot(modA, which = 1 )
@@ -346,9 +355,9 @@ FDfiltered <- finalData1[-c(25, 54), ]
 
 
 ```{r}
-full  <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + Position , data = FDfiltered)
+full  <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + PositionC , data = FDfiltered)
 anova(full)
-three  <- lm(PostIPT ~ PreIPT + amtGamesMissed + Position , data = FDfiltered)
+three  <- lm(PostIPT ~ PreIPT + amtGamesMissed + PositionC , data = FDfiltered)
 twoPred  <- lm(PostIPT ~ PreIPT + amtGamesMissed , data = FDfiltered)
 
 onePred  <- lm(PostIPT ~ PreIPT  , data = FDfiltered)
