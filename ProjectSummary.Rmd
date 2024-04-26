@@ -176,6 +176,9 @@ m6 <- gf_bar(~ PositionC, data = finalData1, fill = c("lavender", "skyblue"))
 grid.arrange(m1, m2, m3, ncol = 3 ) 
 ```
 
+
+
+
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
 grid.arrange( m5, m4, m6, ncol = 3 ) 
 ```
@@ -190,6 +193,10 @@ favstats(~WeekOfInjury, data = finalData1)
 favstats(~amtGamesMissed, data = finalData1)
 favstats(~AgeAtConcussion, data = finalData1)
 favstats(~PreIPT, data = finalData1)
+```
+## Recategorize amount of games missed
+```{r}
+finalData1 <- mutate(finalData1, amtGamesMissedC = cut(amtGamesMissed, breaks = c(0, 0.5, 1.5, 20), labels = c("less than 1 games", "one game", "two or more games"), include.lowest = TRUE))
 ```
 
 
@@ -315,20 +322,30 @@ mplot(PostIPTvs.GamesMissed, which = 1)
 mplot(PostIPTvs.GamesMissed, which = 2)
 cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 ```
+### Post-Injury Play-Time vs. amtGamesMissedC.
+We will represent this with a boxplot
+```{r}
+gf_boxplot(PostIPT ~ amtGamesMissedC, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. amtGamesMissedC")
+
+gf_dens( ~ PostIPT, color = ~amtGamesMissedC, data = finalData1)%>%
+  gf_labs(title = "Post-Injury Play-Time vs. amtGamesMissedC")
+favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
+```
 
 
 ##Final Model (As of now)
 ```{r}
 
 #ggpairs(finalData1)
-finalData1 <- select(finalData, "Player","PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissed")
+finalData1 <- select(finalData1,"PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissed", "amtGamesMissedC" )
 
 
-fm.full <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + PositionC , data = finalData1)
+fm.full <- lm(PostIPT ~ PreIPT  + WeekOfInjury + AgeAtConcussion + PositionC + amtGamesMissedC, data = finalData1)
 anova(fm.full)
 
 
-modA <- lm(PostIPT ~ PreIPT + amtGamesMissed + PositionC, data = finalData1)
+modA <- lm(PostIPT ~ PreIPT + amtGamesMissedC + PositionC, data = finalData1)
 anova(modA)
 msummary(modA)
 mplot(modA, which = 1 )
@@ -337,7 +354,7 @@ mplot(modA, which = 2 )
 
 ```{r, echo = FALSE, fig.height = 4, fig.width = 3}
 
-mod1 <- lm(PostIPT ~ PreIPT + amtGamesMissed, data = finalData1)
+mod1 <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = finalData1)
 anova(mod1)
 msummary(mod1)
 mplot(mod1, which = 1 :2 )
@@ -355,10 +372,10 @@ FDfiltered <- finalData1[-c(25, 54), ]
 
 
 ```{r}
-full  <- lm(PostIPT ~ PreIPT + amtGamesMissed +WeekOfInjury + AgeAtConcussion + PositionC , data = FDfiltered)
+full  <- lm(PostIPT ~ PreIPT + amtGamesMissedC +WeekOfInjury + AgeAtConcussion + PositionC , data = FDfiltered)
 anova(full)
-three  <- lm(PostIPT ~ PreIPT + amtGamesMissed + PositionC , data = FDfiltered)
-twoPred  <- lm(PostIPT ~ PreIPT + amtGamesMissed , data = FDfiltered)
+three  <- lm(PostIPT ~ PreIPT + amtGamesMissedC + PositionC , data = FDfiltered)
+twoPred  <- lm(PostIPT ~ PreIPT + amtGamesMissedC , data = FDfiltered)
 
 onePred  <- lm(PostIPT ~ PreIPT  , data = FDfiltered)
 
