@@ -422,9 +422,15 @@ Final Model (as of now):
 Our current model is PostIPT(hat) = 9.4480 + 0.8325(PreIPT) - 3.5095(amtGamesMissed). The Rsquared is 47.6% and the standard error is 17.9. 
 
 ```{r}
+#Mike Mitchell
 pred <- makeFun(twoPred)
 
 pred(PreIPT = 32, amtGamesMissedC = "less than 1 games")
 ## last slide show example of player and show how the model did
+
+#Julian Edelman
+pred <- makeFun(twoPred)
+
+pred(PreIPT = 41, amtGamesMissedC = "less than 1 games")
 ```
 
