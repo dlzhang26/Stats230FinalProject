@@ -44,13 +44,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-#df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
 #df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
@@ -231,11 +231,15 @@ We will represent this with a box plot, where the two categories are defense and
 
 ```{r}
 gf_boxplot(PostIPT ~ PositionC, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. PositionC")
+  gf_labs(title = "Fig. 1. Post-Injury Play-Time vs. Position")%>%
+  gf_labs(x = "Position", y = "Post-Injury Play Time")
 
 gf_dens( ~ PostIPT, color = ~PositionC, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. PositionC")
+  gf_labs(title = "Fig. 1. Post-Injury Play-Time vs. Position")
 favstats(PostIPT ~ PositionC, data = finalData1)
+positionmod <- lm(PostIPT ~ PositionC, data = finalData1)
+mplot(positionmod, which = 2)
+gf_dens(~ residuals(positionmod))
 ```
 
 
@@ -262,7 +266,7 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
   gf_lm()%>%
-  gf_labs(title = "Post-Injury Play Time vs. Pre-Injury Play Time")
+  gf_labs(title = "Fig. 3. Post-Injury Play Time vs. Pre-Injury Play Time", x = "Pre-Injury Play Time", y = "Post-Injury Play Time")
 
 PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
 mplot(PostIPTvsPreIPT, which = 1)
@@ -276,7 +280,7 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
   gf_lm()%>%
-  gf_labs(title = "Post-Injury Play Time vs. Age at Concussion")
+  gf_labs(title = "Fig. 4. Post-Injury Play Time vs. Age at Concussion", x = "Age at Concussion", y = "Post-Injury Play Time")
 PostIPTvsAge <- lm(PostIPT ~ AgeAtConcussion, data = finalData1)
 mplot(PostIPTvsAge, which = 1)
 mplot(PostIPTvsAge, which = 2)
@@ -302,7 +306,7 @@ We will represent this with a scatterplot.
 ```{r}
 gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
   gf_lm()%>%
-  gf_labs(title = "Post-Injury Play Time vs. Week of Injury")
+  gf_labs(title = "Fig. 5. Post-Injury Play Time vs. Week of Injury", x = "Week of Injury", y = "Post-Injury Play Time")
 PostIPTvsWeekofInjury <- lm(PostIPT ~ WeekOfInjury, data = finalData1)
 mplot(PostIPTvsWeekofInjury, which = 1)
 mplot(PostIPTvsWeekofInjury, which = 2)
@@ -326,11 +330,15 @@ cor(PostIPT ~ amtGamesMissed, data = finalData1, use = "pairwise")
 We will represent this with a boxplot
 ```{r}
 gf_boxplot(PostIPT ~ amtGamesMissedC, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. amtGamesMissedC")
+  gf_labs(title = "Fig. 2. Post-Injury Play-Time vs. Amount of Games Missed")%>%
+  gf_labs(x = "Amount of Games Missed", y = "Post-Injury Play Time")
 
 gf_dens( ~ PostIPT, color = ~amtGamesMissedC, data = finalData1)%>%
-  gf_labs(title = "Post-Injury Play-Time vs. amtGamesMissedC")
+  gf_labs(title = "Post-Injury Play-Time vs. amtGamesMissed")
 favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
+amtgamesmissedmod <- lm(PostIPT ~ amtGamesMissedC, data = finalData1)
+mplot(amtgamesmissedmod, which = 2)
+gf_dens(~ residuals(amtgamesmissedmod))
 ```
 
 
