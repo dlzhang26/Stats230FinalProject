@@ -119,7 +119,8 @@ studydata <- filter(studydata, Season != "2014/2015") ## our sample data
 ```{r}
 tally(~PreseasonInjury,data = studydata)
 
-gf_bar(~PreseasonInjury,data = studydata ) 
+m6a <- gf_bar(~PreseasonInjury,data = studydata)%>%
+  gf_labs(title = "Fig. 6a. Pre-season Injury", x = "Pre-season Injury (Yes/No)") 
 
 
 finalData <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
@@ -138,7 +139,8 @@ Post-Injury Play Time - Descriptive statistics and a frequency histogram with a 
 ##PostIPT RESPONSE VARIABLE
 favstats(~PostIPT, data = finalData1)
 gf_dhistogram(~PostIPT, data = finalData1)%>%
-  gf_dens()
+  gf_dens()%>%
+  gf_labs(title = "Fig. 1a. Post-Injury Play Time")
 
 ```
 
@@ -150,37 +152,44 @@ amtGamesMissed, PreIPT, WeekOfInjury, and AgeAtConcussion are shown below as his
 
 ## quantitative
 
-m1 <- gf_dhistogram(~amtGamesMissed, data = finalData1)%>%
-  gf_dens()
+m2a <- gf_dhistogram(~amtGamesMissed, data = finalData1)%>%
+  gf_dens()%>%
+  gf_labs(title = "Fig. 2a. Amount of Games Missed (Non-Transformed)", x = "Amount of Games Missed")
 
-m2 <- gf_dhistogram(~PreIPT, data = finalData1) %>%
-  gf_dens()
+finalData1 <- mutate(finalData1, amtGamesMissedC = cut(amtGamesMissed, breaks = c(0, 0.5, 1.5, 20), labels = c("less than 1 games", "one game", "two or more games"), include.lowest = TRUE))
+m2b <- gf_bar(~amtGamesMissedC, data = finalData1)%>%
+  gf_dens()%>%
+  gf_labs(title = "Fig. 2b. Amount of Games Missed (Transformed)", x = "Amount of Games Missed")
 
-m3 <- gf_dhistogram(~WeekOfInjury, data = finalData1)%>%
-  gf_dens()
+m3a <- gf_dhistogram(~PreIPT, data = finalData1) %>%
+  gf_dens()%>%
+  gf_labs(title = "Fig. 3a. Average Pre-Injury Play Time", x = "Pre-Injury Play Time (downs)")
 
-m4 <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = "AgeOfFirstConcussion") %>%
-  gf_dens()
+m4a <- gf_dhistogram(~WeekOfInjury, data = finalData1)%>%
+  gf_dens()%>%
+  gf_labs(title = "Fig. 4a. Week of Injury", x = "Week of Injury")
 
-m5 <- gf_dhistogram(~ TotalSnaps, data = finalData1)%>%
-  gf_dens()
+m5a <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = "AgeOfFirstConcussion") %>%
+  gf_dens()%>%
+  gf_labs(title = "Fig. 5a. Age at First Concussion", x = "Age at First Concussion")
 
 ##qualitative
-m6 <- gf_bar(~ PositionC, data = finalData1, fill = c("lavender", "skyblue"))
+m7a <- gf_bar(~ PositionC, data = finalData1, fill = c("lavender", "skyblue"))%>%
+  gf_labs(title = "Fig. 7a. Position", x = "Position")
 
 
 
 
 ```
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
-grid.arrange(m1, m2, m3, ncol = 3 ) 
+grid.arrange(m2a, m2b, m3a, m4a, ncol = 4 ) 
 ```
 
 
 
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
-grid.arrange( m5, m4, m6, ncol = 3 ) 
+grid.arrange(m5a, m6a, m7a, ncol = 3 ) 
 ```
 ```{r}
 tally(~Position, data = finalData1 , format = "perc")
@@ -426,11 +435,14 @@ Our current model is PostIPT(hat) = 9.4480 + 0.8325(PreIPT) - 3.5095(amtGamesMis
 pred <- makeFun(twoPred)
 
 pred(PreIPT = 32, amtGamesMissedC = "less than 1 games")
+pred(PreIPT = 32, amtGamesMissedC = "less than 1 games", interval = "prediction", level = 0.95)
+
 ## last slide show example of player and show how the model did
 
 #Julian Edelman
 pred <- makeFun(twoPred)
 
 pred(PreIPT = 41, amtGamesMissedC = "less than 1 games")
+pred(PreIPT = 41, amtGamesMissedC = "less than 1 games", interval = "prediction", level = 0.95)
 ```
 
