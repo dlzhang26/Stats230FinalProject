@@ -353,6 +353,14 @@ gf_dens(~ residuals(amtgamesmissedmod))
 
 
 ##Final Model (As of now)
+```{r} 
+
+#avs
+
+
+
+```
+
 ```{r}
 
 #ggpairs(finalData1)
@@ -361,6 +369,9 @@ finalData1 <- select(finalData1,"PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConc
 
 fm.full <- lm(PostIPT ~ PreIPT  + WeekOfInjury + AgeAtConcussion + PositionC + amtGamesMissedC, data = finalData1)
 anova(fm.full)
+
+best <- regsubsets(PostIPT ~ PreIPT  + amtGamesMissedC + WeekOfInjury + AgeAtConcussion + PositionC ,data = finalData1, nbest = 1)
+with(summary(best), data.frame(rsq, adjr2, cp, outmat))
 
 
 modA <- lm(PostIPT ~ PreIPT + amtGamesMissedC + PositionC, data = finalData1)
