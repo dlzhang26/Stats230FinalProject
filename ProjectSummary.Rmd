@@ -115,7 +115,7 @@ m6a <- gf_bar(~PreseasonInjury,data = studydata)%>%
 finalData <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
 
 
-finalData1 <- select(finalData, "PostIPT" , "amtGamesMissed", "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC")
+finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
 ```
 
 
@@ -231,7 +231,24 @@ gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
 PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
 mplot(PostIPTvsPreIPT, which = 1)
 mplot(PostIPTvsPreIPT, which = 2)
+mplot(PostIPTvsPreIPT, which = 5)
 cor(PostIPT ~ PreIPT, data = finalData1, use = "pairwise")
+
+## residuals looks pretty good other than 2 outlier, qq looks also good enigh but the same 2 outliers at the end
+## 25 (Chris Prosinski) has high standardized residuals (over 4) 54 (Erin Henderson) has high standarized (-2.5ish) residuals
+
+outliers <-finalData1[c(30,69), ]
+FDfiltered <- finalData1[-c(30,69), ]
+
+
+gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
+  gf_lm()%>%
+  gf_labs(title = "Fig. 3. Post-Injury Play Time vs. Pre-Injury Play Time", x = "Pre-Injury Play Time", y = "Post-Injury Play Time")
+
+PreIPTFiltered <- lm(PostIPT ~ PreIPT, data = FDfiltered)
+mplot(PreIPTFiltered, which = 1)
+mplot(PreIPTFiltered, which = 2)
+gf_dens(~ residuals(PreIPTFiltered))
 ```
 
 ### Post-Injury Play-Time vs. AgeAtConcussion.
