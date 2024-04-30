@@ -1,0 +1,114 @@
+---
+title: "Season's Information and Post Injury Play Time For NFL Players"
+author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
+date: ""
+output:
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  word_document: default
+---
+
+```{r include=FALSE}
+library(mosaic)
+library(GGally)
+require(tidyr)
+require(car)
+library(broom)
+library(tidyverse)
+require(lattice)
+library(gridExtra)
+library(grid)
+library(leaps)
+library(lubridate) # finding age at a given date
+options(scipen=5)
+```
+
+```{r include=FALSE}
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+# knitr settings to control how R chunks work.
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  size="small"    # slightly smaller font for code
+)
+trellis.par.set(theme=theme.mosaic())  
+options(digits=5)
+```
+
+
+```{r, include=FALSE, warning = FALSE, echo = FALSE}
+###############################################################################################
+#getwd() in console to find the directory where the csv file is stored on your computer
+#For your computer you need to change the path so you can reed the file
+#alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
+
+##Donna's computer
+#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+
+
+#For Kaitlyn's computer
+df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+
+#For Arthur's computer
+#df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class26/anwobi26/Stats230_proj/HeadInjuredPlayers.csv")
+
+###############################################################################################
+##Merge
+## gets rid of players who had multiple injuries in the three years
+mergeData <- merge(x = df2, y = df1[!duplicated(df1$Player), ], by = "Player", all.x = TRUE)
+mergeData <- filter(mergeData, Reported.Injury.Type == "Concussion") ## filter so there's only concussions 
+
+## qual --> quant var
+mergeData$Play.Time.After.Injury = parse_number(mergeData$Play.Time.After.Injury)
+mergeData$Average.Playtime.Before.Injury = parse_number(mergeData$Average.Playtime.Before.Injury)
+###############################################################################################
+##rename variables
+nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After.Injury, PreseasonInjury = Pre.Season.Injury., OnWinningTeam = Winning.Team., amtTimeInjured = Weeks.Injured, WeekOfInjury = Week.of.Injury, UnknownInjury = Unknown.Injury., ReportedTypeOfInjury = Reported.Injury.Type, PreIPT = Average.Playtime.Before.Injury, TotalSnaps = Total.Snaps, amtGamesMissed = Games.Missed, GM12 = X2012.2013...Games.Missed, GM13 = X2013.2014...Games.Missed, GM14 = X2014.2015...Games.Missed, I12 = X2012.2013...Number.of.Injuries , I13 = X2013.2014...Number.of.Injuries, I14 = X2014.2015...Number.of.Injuries, TotalInjuries = Total.Number.of.Injuries..2012.2014., PosDuringInjury = Roles.during.injuries, DOB = Date.of.Birth, AgeAtConcussion = Age.first.concussion..2012.2014., totalGamesMissed = Total.Games.Missed..2012.2014., TeamDurConcussion = Team.s..during.concussion.incidents.2012.2014, DOI = Date)
+
+###############################################################################################
+## select variables 
+studyD <- nameData %>% 
+  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeAtConcussion, Position, Team, OppTeam, OnWinningTeam)
+
+## getting the current age 
+# Convert DOB to date objects
+studyD$DOB <- as.Date(as.character(studyD$DOB), format = "%d/%m/%Y")
+
+# Calculate current age
+given_date <- as.Date("2024-04-01")
+current_age_in_years <- as.numeric(interval(studyD$DOB, given_date) / dyears(2))
+studyD$CurrentAge <- round(current_age_in_years, 1)
+
+#############################################################################
+## this re-categorizes position to offense and defense
+studydata <- studyD %>% 
+    mutate(PositionC = case_when(
+    Position %in% c("Defensive End", "Defensive Tackle", "Safety", "Comerback" ) ~ "defense",
+    Position %in% c("Long Snapper", "Wide Receiver", "Tight End", "Linebacker", "Quarterback", "Center", "Guard", "Full Back", "Running Back", "Offensive Tackle") ~ "offense"))
+#############################################################################
+## this re-categorizes team to 2 conferences
+studydata <- studydata %>% 
+    mutate(Conference = case_when( 
+      Team %in% c("Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers", "Buffalo Bills", "New England Patriots", "New York Jets" , "Miami Dolphins", "Houston Texans", "Jacksonville Jaguars", "Tennessee Titans", "Indianapolis Colts", "Denver Broncos", "Kansas City Chiefs", "San Diego Chargers", "Oakland Raiders") ~ "AFC",
+    Team %in% c("Chicago Bears", "Detroit Lions", "Green Bay Packers", "Minnesota Vikings", "New York Giants", "Philadelphia Eagles", "Washington Redskins", "Dallas Cowboys", "Carolina Panthers", "Tampa Bay Buccaneers", "New Orleans Saints", "Atlanta Falcons", "Arizona Cardinals", "Seattle Seahawks", "San Francisco 49ers", "St. Louis Rams") ~ "NFC"))
+#############################################################################
+## this re-categorizes opposing team to 2 conferences
+studydata <- studydata %>% 
+    mutate(OppTeamC = case_when( 
+      OppTeam %in% c("Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers", "Buffalo Bills", "New England Patriots", "New York Jets" , "Miami Dolphins", "Houston Texans", "Jacksonville Jaguars", "Tennessee Titans", "Indianapolis Colts", "Denver Broncos", "Kansas City Chiefs", "San Diego Chargers", "Oakland Raiders") ~ "AFC",
+    OppTeam %in% c("Chicago Bears", "Detroit Lions", "Green Bay Packers", "Minnesota Vikings", "New York Giants", "Philadelphia Eagles", "Washington Redskins", "Dallas Cowboys", "Carolina Panthers", "Tampa Bay Buccaneers", "New Orleans Saints", "Atlanta Falcons", "Arizona Cardinals", "Seattle Seahawks", "San Francisco 49ers", "St. Louis Rams") ~ "NFC"))
+
+#############################################################################
+## creating population and sample
+predictData <-filter(studydata, Season == "2014/2015") ## data for the season we're 
+
+#############################################################################
+
+studydata <- filter(studydata, Season != "2014/2015") ## our sample data
+
+
+```
