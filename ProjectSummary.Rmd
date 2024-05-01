@@ -397,6 +397,24 @@ pred(PreIPT = 41, amtGamesMissedC = "less than 1 games", interval = "prediction"
 #```
 
 ```{r}
+#Julian Edelman
+pred <- makeFun(modA)
+
+pred(PreIPT = 41, amtGamesMissedC = "less than 1 games")
+pred(PreIPT = 41, amtGamesMissedC = "less than 1 games", interval = "prediction", level = 0.95)
+
+#King Dunlap
+pred <- makeFun(modA)
+pred(PreIPT = 74, amtGamesMissedC = "two or more games")
+#real postIPT: 80 downs
+
+#Elbert Mack
+pred(PreIPT = 6, amtGamesMissedC = "one game")
+#real postIPT: 39
+```
+
+
+```{r}
 #Testing model with the new model (without amt games missed)
 
 predPostIPT <- makeFun(modA)
