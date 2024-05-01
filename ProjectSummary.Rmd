@@ -222,7 +222,6 @@ gf_dens(~ residuals(positionmod))
 
 ### Post-Injury Play-Time vs. Pre-Injury Play Time.
 We will represent this with a scatterplot. 
-
 ```{r}
 gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
   gf_lm()%>%
@@ -231,23 +230,29 @@ gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
 PostIPTvsPreIPT <- lm(PostIPT ~ PreIPT, data = finalData1)
 mplot(PostIPTvsPreIPT, which = 1)
 mplot(PostIPTvsPreIPT, which = 2)
-mplot(PostIPTvsPreIPT, which = 5)
+mplot(PostIPTvsPreIPT, which = 6)
 cor(PostIPT ~ PreIPT, data = finalData1, use = "pairwise")
+```
+
+```{r}
+
 
 ## residuals looks pretty good other than 2 outlier, qq looks also good enigh but the same 2 outliers at the end
 ## 25 (Chris Prosinski) has high standardized residuals (over 4) 54 (Erin Henderson) has high standarized (-2.5ish) residuals
 
-outliers <-finalData1[c(30,69), ]
-FDfiltered <- finalData1[-c(30,69), ]
+outliers <-finalData1[c(30), ]
+FDfiltered <- finalData1[-c(30), ]
 
 
 gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
   gf_labs(title = "Fig. 3. Post-Injury Play Time vs. Pre-Injury Play Time", x = "Pre-Injury Play Time", y = "Post-Injury Play Time")
 
+
 PreIPTFiltered <- lm(PostIPT ~ PreIPT, data = FDfiltered)
 mplot(PreIPTFiltered, which = 1)
 mplot(PreIPTFiltered, which = 2)
+mplot(PreIPTFiltered, which = 6)
 gf_dens(~ residuals(PreIPTFiltered))
 ```
 
@@ -325,71 +330,43 @@ gf_dens(~ residuals(amtgamesmissedmod))
 ```{r}
 
 #ggpairs(finalData1)
-finalData1 <- select(finalData1,"PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissed", "amtGamesMissedC" )
+finalData1 <- select(FDfiltered,"PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissedC" )
 
 
-fm.full <- lm(PostIPT ~ PreIPT  + WeekOfInjury + AgeAtConcussion + PositionC + amtGamesMissedC, data = finalData1)
+
+fm.full <- lm(PostIPT ~  PreIPT + WeekOfInjury + AgeAtConcussion + PositionC + amtGamesMissedC, data = FDfiltered)
+
+car::vif(fm.full)
+
 anova(fm.full)
 
-best <- regsubsets(PostIPT ~ PreIPT  + amtGamesMissedC + WeekOfInjury + AgeAtConcussion + PositionC ,data = finalData1, nbest = 1)
-with(summary(best), data.frame(rsq, adjr2, cp, outmat))
+mplot(fm.full, which = 1 )
+mplot(fm.full, which = 2 )
 
 
-modA <- lm(PostIPT ~ PreIPT + amtGamesMissedC + PositionC, data = finalData1)
+
+modA <- lm(PostIPT ~ PreIPT, data = FDfiltered)
 anova(modA)
 msummary(modA)
 mplot(modA, which = 1 )
 mplot(modA, which = 2 )
+
+
+
+modB <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = FDfiltered)
+anova(modB)
+msummary(modB)
+mplot(modB, which = 1 )
+mplot(modB, which = 2 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 3}
-
-mod1 <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = finalData1)
-anova(mod1)
-msummary(mod1)
-mplot(mod1, which = 1 :2 )
-
-
-##2 outleirs - 25, 54
-```
-```{r}
-
-
-
-FDfiltered <- finalData1[-c(25, 54), ]
-
-```
 
 
 ```{r}
-full  <- lm(PostIPT ~ PreIPT + amtGamesMissedC +WeekOfInjury + AgeAtConcussion + PositionC , data = FDfiltered)
-anova(full)
-three  <- lm(PostIPT ~ PreIPT + amtGamesMissedC + PositionC , data = FDfiltered)
-twoPred  <- lm(PostIPT ~ PreIPT + amtGamesMissedC , data = FDfiltered)
-
-onePred  <- lm(PostIPT ~ PreIPT  , data = FDfiltered)
-
-anova(onePred, twoPred, three, full)
-
-anova(twoPred)
-mplot(twoPred, which = 1 )
-mplot(twoPred, which = 2 )
-mplot(twoPred, which = 4)
-mplot(twoPred, which = 5 )
-mplot(twoPred, which = 6 )
+anova(modA, modB, fm.full)
 ```
 
-## Final Model: 2 predictors, with PreIPT and amtGamesMissed
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 3}
-anova(twoPred)
-msummary(twoPred)
-mplot(twoPred, which = 1:2 )
 
-mplot(twoPred, which = 4)
-
-#car::vif(fm.full)
-```
-MLR:
 
 First we ran the kitchen sink model and fond 2 predictors (PreIPT(p-value for t-test = <2e-16) and amtGamesMissed(p-value for t-test = 0.014)) to be significant. We ran VIF on the kitchen sink to see if there were any issues with multicolinarity between our predictions, and all of the VIF < 5, so we had no issues with multicolinarity between our predictors. We then ran a 2 predictor model with only the significant predictors (PreIPT and amtGamesMissed). For equal variance, there were 2 observations with high residuals that we decided to remove - Cecil Shorts and Devin Hester. Cecil Shorts had injuries from the past that he might have been recovering from, which might be why he had higher post injury play time than pre injury play time. Devin Hester is considered to be the greatest return specialist of all time, which might be why he also had significantly more play time post injury than pre injury. 
 
@@ -405,7 +382,7 @@ Our current model is PostIPT(hat) = 9.4480 + 0.8325(PreIPT) - 3.5095(amtGamesMis
 
 ```{r}
 #Mike Mitchell
-pred <- makeFun(twoPred)
+pred <- makeFun(modA)
 
 pred(PreIPT = 32, amtGamesMissedC = "less than 1 games")
 pred(PreIPT = 32, amtGamesMissedC = "less than 1 games", interval = "prediction", level = 0.95)
