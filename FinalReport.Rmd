@@ -1,7 +1,7 @@
 ---
-title: "Season's Information and Post Injury Play Time For NFL Players"
+title: "Predicting Post Injury Play Time For NFL Players"
 author: 'Group D: Arthur, Donna, Kaitlyn, Michael'
-date: ""
+date: "5/7/2024"
 output:
   pdf_document:
     fig_height: 3
@@ -44,13 +44,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-#df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
 #df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
@@ -98,6 +98,65 @@ predictData <-filter(studydata, Season == "2014/2015") ## data for the season we
 
 #############################################################################
 
+tally(~PreseasonInjury,data = studydata)
+
+m6a <- gf_bar(~PreseasonInjury,data = studydata)%>%
+  gf_labs(title = "Fig. 6a. Pre-season Injury", x = "Pre-season Injury (Yes/No)") 
+
+
+finalData <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
+
+
+finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
 studydata <- filter(studydata, Season != "2014/2015") ## our sample data
 
+finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
 ```
+
+
+# **Abstract**
+Insert abstract here.
+
+
+# **Background and Meaning**
+Insert stuff here.
+
+
+# **Methods**
+
+## Data Set
+Insert description of data set here.
+
+## Variables
+Insert information on variables here.
+
+## Statistical Models
+Insert info on statistical models here.
+
+
+# **Results**
+
+## Univariate Exploratory Data Analysis
+Our response variable for this study is Post-Injury Play Time. This is a quantitative variable that indicates the average play time for a player after their concussion injury. 
+
+```{r, warning = FALSE, echo = FALSE, fig.height = 2, fig.width = 3}
+##PostIPT RESPONSE VARIABLE
+gf_dhistogram(~PostIPT, data = finalData1)%>%
+  gf_dens()%>%
+  gf_labs(title = "Fig. 1. Post-Injury Play Time")
+```
+
+**Fig. 1.** The distribution is bimodal, with modes at around 20 downs and 62 downs, and symmetric. The median is 49.5 downs and the IQR is 42.75 downs. The mean is 47.093 downs and the standard deviation is 24.758 downs.
+
+## Bivariate Exploratory Data Analysis
+Put stuff here.
+
+## Final Model
+Put stuff here.
+
+
+# **Interpreting the Final Model**
+Put interpretation here.
+
+
+# **Conclusion**
