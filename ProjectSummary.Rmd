@@ -241,7 +241,7 @@ cor(PostIPT ~ PreIPT, data = finalData1, use = "pairwise")
 ## 25 (Chris Prosinski) has high standardized residuals (over 4) 54 (Erin Henderson) has high standarized (-2.5ish) residuals
 
 outliers <-finalData1[c(30), ]
-FDfiltered <- finalData1[-c(30), ]
+FDfiltered <- finalData1[-c(30)]
 
 
 gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
