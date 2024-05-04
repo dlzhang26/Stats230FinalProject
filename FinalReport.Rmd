@@ -234,8 +234,8 @@ grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutli
 **Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed outliers at Pre-Injury Play Time = 0 and Pre-Injury Play Time > 80. We removed outlier 32 to improve our equal variance and normality of errors. 
 
 ```{r, warning = FALSE, echo = FALSE}
-outliers <-finalData1[c(30), ]
-FDfiltered <- finalData1[-c(30)]
+outliers <-finalData1[c(37), ]
+FDfiltered <- finalData1[-c(37)]
 
 gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
@@ -249,7 +249,20 @@ PreIPTFilteredQQ <- mplot(PreIPTFiltered, which = 2)
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 10}
 grid.arrange(PreIPTFilteredResids, PreIPTFilteredQQ, ncol = 2)
 ```
-**Fig. 6. Pre-Injury Play Time Without the Outlier.** Removing the outlier, the residuals and QQ plot improved. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.674). In other words, the more pre-injury play time a player had, the more post-injury play time a player had.  
+**Fig. 6. Pre-Injury Play Time Without the Outlier.** After removing the outlier, the residuals and QQ plot improved. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.674). In other words, the more pre-injury play time a player had, the more post-injury play time a player had.  
+
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12}
+AgeAtConcussionBiv <- gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Age at Concussion", x = "Age at Concussion", y = "Post-Injury Play Time")
+
+WeekofInjuryBiv <- gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Week of Injury", x = "Week of Injury", y = "Post-Injury Play Time")
+
+grid.arrange(AgeAtConcussionBiv, WeekofInjuryBiv, ncol = 2)
+```
+**Fig. 7.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0605). There is also no relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.0159).
 
 
 ## Final Model
