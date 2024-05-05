@@ -254,6 +254,7 @@ mplot(PreIPTFiltered, which = 1)
 mplot(PreIPTFiltered, which = 2)
 plot(PreIPTFiltered, which = 5)
 gf_dens(~ residuals(PreIPTFiltered))
+cor(PostIPT ~ PreIPT, data = FDfiltered, use = "pairwise")
 ```
 
 ### Post-Injury Play-Time vs. AgeAtConcussion.
