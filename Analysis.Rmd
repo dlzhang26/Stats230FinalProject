@@ -145,6 +145,7 @@ grid.arrange(m1, m2, m3, ncol = 3 )
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15 }
 grid.arrange(m4, m5, m6, ncol = 3 ) 
+
 ```
 
 
