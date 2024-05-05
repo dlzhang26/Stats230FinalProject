@@ -236,18 +236,26 @@ PreIPTOutliers <- gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
 PostIPTvsPreIPTOutliers <- lm(PostIPT ~ PreIPT, data = finalData1)
 PostIPTvsPreIPTOutliersResids <- mplot(PostIPTvsPreIPTOutliers, which = 1)
 PostIPTvsPreIPTOutliersQQ <- mplot(PostIPTvsPreIPTOutliers, which = 2)
+
 ```
 
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 10}
-grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutliersQQ, ncol = 2)
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
+grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutliersQQ, ncol = 3)
 ```
-**Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed outliers at Pre-Injury Play Time = 0 and Pre-Injury Play Time > 80. We removed outlier 32 to improve our equal variance and normality of errors. 
+
+**Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusal points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. 
+
+```{r warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 4}
+plot(PostIPTvsPreIPT, which = 5)
+```
+
+**Fig. 5a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set) has high leverage () and standardized residuals (over 4). NAME DROP AND EXPLAIN POSSIBLE REASONING. 69 has high negative standardized residuals but moderate leverage ###, so we decided not to remove. 
 
 ```{r, warning = FALSE, echo = FALSE}
 outliers <-finalData1[c(37), ]
 FDfiltered <- finalData1[-c(37),]
 
-gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
+PreIPTFilteredPoint<-gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
   gf_labs(title = "Post-Injury Play Time vs. Pre-Injury Play Time (No Outliers)", x = "Pre-Injury Play Time", y = "Post-Injury Play Time")
 ```
@@ -257,8 +265,8 @@ PreIPTFilteredResids <- mplot(PreIPTFiltered, which = 1)
 PreIPTFilteredQQ <- mplot(PreIPTFiltered, which = 2)
 cor(PostIPT ~ PreIPT, data = FDfiltered, use = "pairwise")
 ```
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 10}
-grid.arrange(PreIPTFilteredResids, PreIPTFilteredQQ, ncol = 2)
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
+grid.arrange(PreIPTFilteredPoint, PreIPTFilteredResids, PreIPTFilteredQQ, ncol = 3)
 ```
 **Fig. 6. Pre-Injury Play Time Without the Outlier.** After removing the outlier, the residuals and QQ plot improved. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.658). In other words, the more pre-injury play time a player had, the more post-injury play time a player had.  
 
