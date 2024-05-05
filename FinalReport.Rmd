@@ -44,13 +44,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+#df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
 #df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
@@ -72,7 +72,7 @@ nameData <- rename(mergeData, OppTeam = Opposing.Team, PostIPT = Play.Time.After
 ###############################################################################################
 ## select variables 
 studyD <- nameData %>% 
-  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, I12, I13, I14, TotalInjuries, GM12, GM13, GM14,totalGamesMissed, DOB, DOI, AgeAtConcussion, Position, Team, OppTeam, OnWinningTeam)
+  select(PostIPT, PreseasonInjury, Season, amtGamesMissed, PreIPT, WeekOfInjury, TotalSnaps, Player, DOB, DOI, AgeAtConcussion, Position, Team, OppTeam, OnWinningTeam)
 
 ## getting the current age 
 # Convert DOB to date objects
@@ -93,25 +93,28 @@ studydata <- studyD %>%
 
 
 #############################################################################
-## creating population and sample
-predictData <-filter(studydata, Season == "2014/2015") ## data for the season we are predicting
-
-#############################################################################
-
+## showing why we are removing preseason injury. 
 tally(~PreseasonInjury,data = studydata)
 
 m6a <- gf_bar(~PreseasonInjury,data = studydata)%>%
   gf_labs(title = "Fig. 6a. Pre-season Injury", x = "Pre-season Injury (Yes/No)") 
 
+## filters out players who have gotten preseason injury bc not enough observations. 
+##population
+finalData <- filter(studydata, PreseasonInjury == "No") 
 
-finalData <- filter(studydata, PreseasonInjury == "No") ## filters out players who have gotten preseason injury bc not enough observations. 
+#############################################################################
+## data for the season we are predicting
+predictData <-filter(studydata, Season == "2014/2015") 
 
-
+##sample
 finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
 studydata <- filter(studydata, Season != "2014/2015") ## our sample data
 
 finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
 
+
+# mutates amt games missed to categorical variable. 
 finalData1 <- mutate(finalData1, amtGamesMissedC = cut(amtGamesMissed, breaks = c(0, 0.5, 1.5, 20), labels = c("less than 1 games", "one game", "two or more games"), include.lowest = TRUE))
 ```
 
