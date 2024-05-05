@@ -217,12 +217,12 @@ grid.arrange(PositionBiv, AmtgamesmissedBiv, ncol = 2)
 ### Quantitative Variables
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 7}
-#Hid these plots. 
 PreIPTOutliers <- gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
   gf_lm()%>%
   gf_labs(title = "Post-Injury Play Time vs. Pre-Injury Play Time (Outliers)", x = "Pre-Injury Play Time", y = "Post-Injury Play Time")
 ```
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12, fig.show='hide'}
+#Hid these plots. 
 PostIPTvsPreIPTOutliers <- lm(PostIPT ~ PreIPT, data = finalData1)
 PostIPTvsPreIPTOutliersResids <- mplot(PostIPTvsPreIPTOutliers, which = 1)
 PostIPTvsPreIPTOutliersQQ <- mplot(PostIPTvsPreIPTOutliers, which = 2)
@@ -234,8 +234,8 @@ grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutli
 **Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed outliers at Pre-Injury Play Time = 0 and Pre-Injury Play Time > 80. We removed outlier 32 to improve our equal variance and normality of errors. 
 
 ```{r, warning = FALSE, echo = FALSE}
-outliers <-finalData1[c(37), ]
-FDfiltered <- finalData1[-c(37)]
+outliers <-finalData1[c(30), ]
+FDfiltered <- finalData1[-c(30),]
 
 gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
