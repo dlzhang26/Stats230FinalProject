@@ -273,6 +273,7 @@ grid.arrange(AgeAtConcussionBiv, WeekofInjuryBiv, ncol = 2)
 ```{r, warning = FALSE, echo = FALSE, fig.show='hide'}
 cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
 cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
+
 ```
 **Fig. 7.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also no relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
 
