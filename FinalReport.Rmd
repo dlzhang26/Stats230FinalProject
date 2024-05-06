@@ -228,6 +228,24 @@ grid.arrange(PositionBiv, AmtgamesmissedBiv, ncol = 2)
 
 ### Quantitative Variables
 
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12}
+AgeAtConcussionBiv <- gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Age at Concussion", x = "Age at Concussion", y = "Post-Injury Play Time")
+
+WeekofInjuryBiv <- gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
+  gf_lm()%>%
+  gf_labs(title = "Post-Injury Play Time vs. Week of Injury", x = "Week of Injury", y = "Post-Injury Play Time")
+
+grid.arrange(AgeAtConcussionBiv, WeekofInjuryBiv, ncol = 2)
+```
+```{r, warning = FALSE, echo = FALSE, fig.show='hide'}
+cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
+cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
+
+```
+**Fig. 5.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also little relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
+
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 7}
 PreIPTOutliers <- gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
   gf_lm()%>%
@@ -246,13 +264,13 @@ PostIPTvsPreIPTOutliersQQ <- mplot(PostIPTvsPreIPTOutliers, which = 2)
 grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutliersQQ, ncol = 3)
 ```
 
-**Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusual points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. We will evaluate the most extreme outlier and see if conditions improve by only removing one point to preserve numbers. 
+**Fig. 6. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusual points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. We will evaluate the most extreme outlier and see if conditions improve by only removing one point to preserve numbers. 
 
 ```{r warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 4}
 plot(PostIPTvsPreIPT, which = 5)
 ```
 
-**Fig. 5a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set)is the most unusual point in our dataset. This player is Chris Prosinski, and he is considered an extreme outlier according to his standardized residuals of over 4 (threshold is 3) and high leverage of over 3.5 (high leverage threshold at 6/203 = 0.0296). One possible explanation was that Prosinski's injury was not severe enough keep him out of the field, but he could have been benched for the remaining two games of the regular season, resulting in an average Post-Injury play time of 0. We will remove this player and see if conditions improve.
+**Fig. 6a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set)is the most unusual point in our dataset. This player is Chris Prosinski, and he is considered an extreme outlier according to his standardized residuals of over 4 (threshold is 3) and high leverage of over 3.5 (high leverage threshold at 6/203 = 0.0296). One possible explanation was that Prosinski's injury was not severe enough keep him out of the field, but he could have been benched for the remaining two games of the regular season, resulting in an average Post-Injury play time of 0. We will remove this player and see if conditions improve.
 
 ```{r, warning = FALSE, echo = FALSE}
 outliers <-finalData1[c(30), ]
@@ -268,32 +286,39 @@ PreIPTFilteredResids <- mplot(PreIPTFiltered, which = 1)
 PreIPTFilteredQQ <- mplot(PreIPTFiltered, which = 2)
 cor(PostIPT ~ PreIPT, data = FDfiltered, use = "pairwise")
 ```
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 18}
 grid.arrange(PreIPTFilteredPoint, PreIPTFilteredResids, PreIPTFilteredQQ, ncol = 3)
 ```
-**Fig. 6. Pre-Injury Play Time Without the Outlier.** After removing the outlier, the residuals and QQ plot improved. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.658). In other words, the more pre-injury play time a player had, the more post-injury play time a player had.  
+**Fig. 7. Pre-Injury Play Time Without the Outlier.** After removing the outlier, the residuals and QQ plot improved. The residuals plot looks homoscedastic with one point that seems unusual (observation 53). The qq-plot has a slight taper on the lower hand, but looks normally distributed otherwise. There were other points that were part of the taper, so we decided to proceed with caution and keep observation 53. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.658). In other words, the more pre-injury play time a player had, the more post-injury play time a player had. 
 
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12}
-AgeAtConcussionBiv <- gf_point(PostIPT ~ AgeAtConcussion, data = finalData1)%>%
-  gf_lm()%>%
-  gf_labs(title = "Post-Injury Play Time vs. Age at Concussion", x = "Age at Concussion", y = "Post-Injury Play Time")
-
-WeekofInjuryBiv <- gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
-  gf_lm()%>%
-  gf_labs(title = "Post-Injury Play Time vs. Week of Injury", x = "Week of Injury", y = "Post-Injury Play Time")
-
-grid.arrange(AgeAtConcussionBiv, WeekofInjuryBiv, ncol = 2)
+```{r warning = FALSE, echo = FALSE}
+msummary(PreIPTFiltered)
 ```
-```{r, warning = FALSE, echo = FALSE, fig.show='hide'}
-cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
-cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
-
-```
-**Fig. 7.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also little relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
-
+**Table 1. SLR Using Pre-Injury Play Time To Predict Post-Injury Play Time** Based on the Model Summary, Pre-Injury Play Time is a significant predictor for Post-Injury Play Time F(1,166) = 170, p-value <0.001. The coefficient of 0.8794 indicates that for every 1 down increase in Pre-Injury Play Time, Post-Injury Play Time will increase on average by 0.8794. Since this number is less than 1, the average play time after an injury will be less than the play time before the injury. 
 
 ## Final Model
-Put stuff here.
+```{r warning = FALSE, echo = FALSE}
+finalData1 <- select(FDfiltered,"PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissedC" )
+KitchenSink <- lm(PostIPT ~  PreIPT + WeekOfInjury + AgeAtConcussion + PositionC + amtGamesMissedC, data = FDfiltered)
+
+car::vif(KitchenSink)
+
+msummary(KitchenSink)
+```
+**Table 2. Kitchen Sink Model** Based on the VIF<5 for all predictors in the Kitchen Sink Model, there are no issues associated with multicollinearity among predictors. The Kitchen Sink Model is significant at predicting Post-Injury Play Time overall, F(6,161)= 30.3, p-value <0.001. The model summary for the Kitchen Sink indicates that Pre-Injury Play Time (p-value for the t-test <0.0001) and missing two or more games (p-value for t-test = 0.03) are significant predictors for Post-Injury Play Time. Since not all predictors are significant, we will check conditions after reducing the model to two predictors. 
+
+```{r warning = FALSE, echo = FALSE}
+ModTwoPred <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = FDfiltered)
+msummary(ModTwoPred)
+```
+**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** 
+```{r  warning = FALSE, echo = FALSE}
+mplot(ModTwoPred, which = 1:2 )
+```
+
+
+
+
 
 
 # **Interpreting the Final Model**
