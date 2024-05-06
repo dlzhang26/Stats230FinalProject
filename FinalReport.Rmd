@@ -312,13 +312,17 @@ ModTwoPred <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = FDfiltered)
 msummary(ModTwoPred)
 ```
 **Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** 
+
 ```{r  warning = FALSE, echo = FALSE}
 mplot(ModTwoPred, which = 1:2 )
 ```
 
+**Fig. 8 Conditions For Two Predictor Model**
 
-
-
+```{r warning = FALSE, echo = FALSE}
+anova(PreIPTFiltered, ModTwoPred, KitchenSink)
+```
+ **Table 4. Nested F-Test**
 
 
 # **Interpreting the Final Model**
