@@ -296,7 +296,7 @@ msummary(PreIPTFiltered)
 ```
 **Table 1. SLR Using Pre-Injury Play Time To Predict Post-Injury Play Time** Based on the Model Summary, Pre-Injury Play Time is a significant predictor for Post-Injury Play Time F(1,166) = 170, p-value <0.001. The coefficient of 0.8794 indicates that for every 1 down increase in Pre-Injury Play Time, Post-Injury Play Time will increase on average by 0.8794. Since this number is less than 1, the average play time after an injury will be less than the play time before the injury. 
 
-## Final Model
+## Multiple Linear Regression
 ```{r warning = FALSE, echo = FALSE}
 finalData1 <- select(FDfiltered,"PostIPT" , "PreIPT", "WeekOfInjury", "AgeAtConcussion", "PositionC", "amtGamesMissedC" )
 KitchenSink <- lm(PostIPT ~  PreIPT + WeekOfInjury + AgeAtConcussion + PositionC + amtGamesMissedC, data = FDfiltered)
@@ -311,7 +311,7 @@ msummary(KitchenSink)
 ModTwoPred <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = FDfiltered)
 msummary(ModTwoPred)
 ```
-**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** The MLR model is significant overall, F(3,164) = 60, p-value <0.001. Within the model, Pre-Injury Play Time (p-value <0.001 for the t-test) and Missing two or more games (p-value = 0.015 for the t-test) are significant predictors. 
+**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** The MLR model is significant overall, F(3,164) = 60, p-value <0.001. Within the model, Pre-Injury Play Time (p-value <0.001 for the t-test) and Missing two or more games (p-value = 0.015 for the t-test) are significant predictors. Missing one game is not a significant predictor in the MLR model, p-value = 0.777 for the t-test. 
 
 ```{r  warning = FALSE, echo = FALSE, fig.height=3, fig.width=12}
 mod2Resid <- mplot(ModTwoPred, which = 1)
@@ -326,9 +326,17 @@ anova(PreIPTFiltered, ModTwoPred, KitchenSink)
 ```
 **Table 4. Nested F-Test** The two predictor model with Pre-Injury Play Time and Amount of Games Missed (categorical) accounts for significantly more variable in Post-Injury Play Time based on nested f-test, F(2,164) = 3.09 p-value = 0.048. 
 
+## Final Model
 
 # **Interpreting the Final Model**
-Put interpretation here.
+
+$\hat{\text{PostIPT}} = 6.6832 + 0.8698(PreIPT) - 0.8171(MissingOneGame) - 10.6248(MissingTwoOrMoreGames)$
+
+Using manual selection from the Kitchen Sink Model (Table 2) and a nested F-test (Table 4), we found that best model used Pre-Injury Play Time and Amount of Games Missed (categorical) as predictors for Post-Injury Play Time (Table 3). We verified that there were no concerns for multicollinarity among predictors with all VIFs <5 (Table 2). Based on Fig. 8, conditions for multiple linear regression are satisfied. Our model accounts for 51.5% of the variability in Post-Injury Play Time and is on average 17.1 downs off of the actual Play Time Post-Injury (Table 3). The coefficient for the Pre-Injury Play Time predictor indicates that for every 1 down increase in Pre-Injury Play Time, Post-Injury Play Time increase on average by 0.8698, after accounting for the Amount of Games Missed. This indicates the Pre-Injury and Post-Injury Play time are positively associated. Although there is a positive relationship between Pre and Post Injury Play Time, the coefficient of 0.8698 indicates that our model predicts player's Post-Injury Play Time to be less than Pre-Injury Play Time overall (since the slope is less than 1). The coefficient for Missing Two Or More Games indicates that players who have missed two or more games will have 10.6248 less downs on average Post-Injury, after accounting for the player's Pre-Injury Play Time. Our final Model is a parallel slopes model that can be separated into three equations based on the amount of games missed. Although only players who have missed two or more games had a significant coefficient, we cannot combine the equation because the significance exists still. 
+$\hat{\text{PostIPT(MissingNoGames)}} = 6.6832 + 0.8698(PreIPT))$
+$\hat{\text{PostIPT(MissingOneGame)}} = 5.8661 + 0.8698(PreIPT)$
+$\hat{\text{PostIPT(MissingTwoOrMoreGames)}} = -3.9416 + 0.8698(PreIPT)$
+
 
 
 # **Conclusion**
