@@ -108,14 +108,14 @@ finalData <- filter(studydata, PreseasonInjury == "No")
 predictData <-filter(studydata, Season == "2014/2015") 
 
 ##sample
-finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
+## selecting years
 studydata <- filter(studydata, Season != "2014/2015") ## our sample data
-
-finalData1 <- select(finalData, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
-
+finalData1 <- select(studydata, "PostIPT" ,"PreIPT", "amtGamesMissed", "WeekOfInjury", "AgeAtConcussion", "PreseasonInjury", "Position","Team", "OnWinningTeam", "PositionC", "Player")
 
 # mutates amt games missed to categorical variable. 
-finalData1 <- mutate(finalData1, amtGamesMissedC = cut(amtGamesMissed, breaks = c(0, 0.5, 1.5, 20), labels = c("less than 1 games", "one game", "two or more games"), include.lowest = TRUE))
+finalData1 <- mutate(finalData1, amtGamesMissedC = cut(amtGamesMissed, breaks = c(-1, 0.5, 1.5, 20), labels = c("no games", "one game", "two or more games"), include.lowest = TRUE))
+
+finalData1 <- filter(finalData1, amtGamesMissedC %in% c("no games", "one game", "two or more games"))
 ```
 
 
@@ -162,9 +162,9 @@ favstats(~PostIPT, data = finalData1)
 Our qualitative explanatory variables are Amount of Games Missed, Position, and Pre-Season Injury.
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 10}
-AmtGamesMissedUni <- gf_bar(~amtGamesMissedC, data = finalData1, fill = c("darkred","darkblue","darkgreen"))%>%
-  gf_dens()%>%
-  gf_labs(title = "Amount of Games Missed (Transformed)", x = "Amount of Games Missed")
+AmtGamesMissedUni <- gf_bar(~amtGamesMissedC, data = finalData1, fill = c("darkred", "darkblue", "darkgreen")) %>%
+  gf_dens() %>%
+  gf_labs(title = "Amount of Games Missed (Transformed)",  x = "Amount of Games Missed")
 
 AmtGamesMissedUniQuant <- gf_dhistogram(~amtGamesMissed, data = finalData1)%>%
   gf_dens()%>%
@@ -177,8 +177,10 @@ PreSeasonInjuryUni <- gf_bar(~ PreseasonInjury, data = studydata, fill = c("pink
   gf_labs(title = "Pre-Season Injury", x = "Pre-Season Injury")
 
 grid.arrange(AmtGamesMissedUni, AmtGamesMissedUniQuant, ncol = 2)
+
 grid.arrange(PositionUni, PreSeasonInjuryUni, ncol = 2)
 ```
+
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12, fig.show='hide'}
 favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
 favstats(PostIPT ~ PositionC, data = finalData1)
@@ -239,21 +241,22 @@ PostIPTvsPreIPTOutliersQQ <- mplot(PostIPTvsPreIPTOutliers, which = 2)
 
 ```
 
+
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 15}
 grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutliersQQ, ncol = 3)
 ```
 
-**Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusal points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. 
+**Fig. 5. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusual points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. We will evaluate the most extreme outlier and see if conditions improve by only removing one point to preserve numbers. 
 
 ```{r warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 4}
 plot(PostIPTvsPreIPT, which = 5)
 ```
 
-**Fig. 5a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set) has high leverage () and standardized residuals (over 4). NAME DROP AND EXPLAIN POSSIBLE REASONING. 69 has high negative standardized residuals but moderate leverage ###, so we decided not to remove. 
+**Fig. 5a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set)is the most unusual point in our dataset. This player is Chris Prosinski, and he is considered an extreme outlier according to his standardized residuals of over 4 (threshold is 3) and high leverage of over 3.5 (high leverage threshold at 6/203 = 0.0296). One possible explanation was that Prosinski's injury was not severe enough keep him out of the field, but he could have been benched for the remaining two games of the regular season, resulting in an average Post-Injury play time of 0. We will remove this player and see if conditions improve.
 
 ```{r, warning = FALSE, echo = FALSE}
-outliers <-finalData1[c(37), ]
-FDfiltered <- finalData1[-c(37),]
+outliers <-finalData1[c(30), ]
+FDfiltered <- finalData1[-c(30),]
 
 PreIPTFilteredPoint<-gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
@@ -286,7 +289,7 @@ cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
 cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
 
 ```
-**Fig. 7.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also no relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
+**Fig. 7.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also little relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
 
 
 ## Final Model

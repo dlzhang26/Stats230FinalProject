@@ -240,8 +240,8 @@ cor(PostIPT ~ PreIPT, data = finalData1, use = "pairwise")
 ## residuals looks pretty good other than 2 outlier, qq looks also good enigh but the same 2 outliers at the end
 ## 25 (Chris Prosinski) has high standardized residuals (over 4) 54 (Erin Henderson) has high standarized (-2.5ish) residuals
 
-outliers <-finalData1[c(30), ]
-FDfiltered <- finalData1[-c(30)]
+outliers <-finalData1[c(30,69), ]
+FDfiltered <- finalData1[-c(30,69), ]
 
 
 gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
@@ -255,7 +255,13 @@ mplot(PreIPTFiltered, which = 2)
 plot(PreIPTFiltered, which = 5)
 gf_dens(~ residuals(PreIPTFiltered))
 cor(PostIPT ~ PreIPT, data = FDfiltered, use = "pairwise")
+
 ```
+```{r}
+m1 <- lm(PostIPT ~PreIPT + amtGamesMissed, data = FDfiltered)
+msummary(m1)
+```
+
 
 ### Post-Injury Play-Time vs. AgeAtConcussion.
 We will represent this with a scatterplot.
