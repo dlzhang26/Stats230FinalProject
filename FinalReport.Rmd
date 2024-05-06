@@ -267,10 +267,10 @@ grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutli
 **Fig. 6. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusual points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. We will evaluate the most extreme outlier and see if conditions improve by only removing one point to preserve numbers. 
 
 ```{r warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 4}
-plot(PostIPTvsPreIPT, which = 5)
+plot(PostIPTvsPreIPTOutliers, which = 5)
 ```
 
-**Fig. 6a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set)is the most unusual point in our dataset. This player is Chris Prosinski, and he is considered an extreme outlier according to his standardized residuals of over 4 (threshold is 3) and high leverage of over 3.5 (high leverage threshold at 6/203 = 0.0296). One possible explanation was that Prosinski's injury was not severe enough keep him out of the field, but he could have been benched for the remaining two games of the regular season, resulting in an average Post-Injury play time of 0. We will remove this player and see if conditions improve.
+**Fig. 6a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set) is the most unusual point. This player is Chris Prosinski, identified as an extreme outlier due to his standardized residuals exceeding 4 (threshold is 3) and high leverage over 3.5 (high leverage threshold at 6/203 = 0.0296). Upon researching Prosinski's injury, we found that he played fewer downs before his injury in week 15 and none after. One possible explanation is a data entry error where Prosinski's playtime before and after the injury was reversed. Therefore, we will remove this player and assess if conditions improve.
 
 ```{r, warning = FALSE, echo = FALSE}
 outliers <-finalData1[c(30), ]
@@ -311,18 +311,20 @@ msummary(KitchenSink)
 ModTwoPred <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = FDfiltered)
 msummary(ModTwoPred)
 ```
-**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** 
+**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** The MLR model is significant overall, F(3,164) = 60, p-value <0.001. Within the model, Pre-Injury Play Time (p-value <0.001 for the t-test) and Missing two or more games (p-value = 0.015 for the t-test) are significant predictors. 
 
-```{r  warning = FALSE, echo = FALSE}
-mplot(ModTwoPred, which = 1:2 )
+```{r  warning = FALSE, echo = FALSE, fig.height=3, fig.width=12}
+mod2Resid <- mplot(ModTwoPred, which = 1)
+mod2QQ <- mplot(ModTwoPred, which = 2)
+grid.arrange(mod2Resid, mod2QQ, ncol = 2)
 ```
 
-**Fig. 8 Conditions For Two Predictor Model**
+**Fig. 8 Conditions For Two Predictor Model** The residuals plot looks homoskedastic and linear, so the equal variance condition is satisfied. The QQplot has a slight taper on the lower end, but overall looks normal enough. Assuming that the independence condition is satisfied, we can proceed with caution due to the taper on the lower end of the QQplot. 
 
 ```{r warning = FALSE, echo = FALSE}
 anova(PreIPTFiltered, ModTwoPred, KitchenSink)
 ```
- **Table 4. Nested F-Test**
+**Table 4. Nested F-Test** The two predictor model with Pre-Injury Play Time and Amount of Games Missed (categorical) accounts for significantly more variable in Post-Injury Play Time based on nested f-test, F(2,164) = 3.09 p-value = 0.048. 
 
 
 # **Interpreting the Final Model**
