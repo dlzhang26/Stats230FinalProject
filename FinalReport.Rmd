@@ -44,13 +44,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-#df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
 #df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
@@ -152,7 +152,7 @@ gf_dhistogram(~PostIPT, data = finalData1)%>%
   gf_dens()%>%
   gf_labs(title = "Fig. 1. Post-Injury Play Time")
 ```
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12, fig.show='hide'}
+```{r, warning = FALSE, echo = FALSE, results='hide'}
 favstats(~PostIPT, data = finalData1)
 ```
 **Fig. 1.** The distribution is bimodal, with modes at around 20 downs and 62 downs, and symmetric. The median is 49 downs and the IQR is 42.5 downs. The mean is 47.37 downs and the standard deviation is 24.64 downs.
@@ -180,8 +180,7 @@ grid.arrange(AmtGamesMissedUni, AmtGamesMissedUniQuant, ncol = 2)
 
 grid.arrange(PositionUni, PreSeasonInjuryUni, ncol = 2)
 ```
-
-```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12, fig.show='hide'}
+```{r, warning = FALSE, echo = FALSE, results='hide'}
 favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
 favstats(PostIPT ~ PositionC, data = finalData1)
 tally(~PreseasonInjury,data = studydata)
@@ -208,7 +207,12 @@ AgeAtConcussionUni <- gf_dhistogram(~AgeAtConcussion, data = finalData1, main = 
 
 grid.arrange(PreIPTUni, WeekofInjuryUni, AgeAtConcussionUni, ncol = 3) 
 ```
-**Fig. 3.** The distribution of Pre-Injury Play Time is unimodal and slightly skewed to the left. The median is 51 downs and the IQR is 32 downs. The mean is 47.418 downs and the standard deviation is 19.577 downs. Week of Injury looks bimodal and almost uniform, with one main mode at week 10. The median is 10 weeks and the IQR is 8 weeks. The mean is 9.48 weeks and the standard deviation is 4.69 weeks. The distribution of Age at Concussion is unimodal and slightly skewed to the right. The median is 26.31 years and the IQR is 4.07 years. The mean is 26.497 years and the standard deviation is 2.8941 years. 
+```{r, warning = FALSE, echo = FALSE, results='hide'}
+favstats(~PreIPT, data = finalData1)
+favstats(~WeekOfInjury, data = finalData1)
+favstats(~AgeAtConcussion, data = finalData1)
+```
+**Fig. 3.** The distribution of Pre-Injury Play Time is unimodal and slightly skewed to the left. The median is 51 downs and the IQR is 33.07 downs. The mean is 47.321 downs and the standard deviation is 19.906 downs. Week of Injury looks bimodal and almost uniform, with one main mode at week 10. The median is 9 weeks and the IQR is 7 weeks. The mean is 8.78 weeks and the standard deviation is 4.60 weeks. The distribution of Age at Concussion is unimodal and slightly skewed to the right. The median is 25.88 years and the IQR is 3.91 years. The mean is 26.357 years and the standard deviation is 2.902 years. 
 
 
 ## Bivariate Exploratory Data Analysis
@@ -224,6 +228,11 @@ AmtgamesmissedBiv <- gf_boxplot(PostIPT ~ amtGamesMissedC, data = finalData1)%>%
 
 grid.arrange(PositionBiv, AmtgamesmissedBiv, ncol = 2)
 ```
+```{r, warning = FALSE, echo = FALSE, results='hide'}
+favstats(PostIPT ~ PositionC, data = finalData1)
+favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
+```
+
 **Fig. 4.** Regarding Position, there does not seem to be a massive difference in the median and IQR of Post-Injury Play Time between offensive players (median = 47, IQR = 39) and defensive players (median = 54, IQR = 44.25). This suggests that a player's position may not play a role in their post-injury play time. However, regarding Amount of Games Missed, the median and IQR of Post-Injury Play Time for players who missed two or more games (median = 23, IQR = 39) looks lower than that of players who missed one game (median = 51, IQR = 43. 25) and players who missed no games (median = 49, IQR = 41.25). This suggests that the more games a player misses, the less play time they get after the injury. 
 
 ### Quantitative Variables
@@ -239,10 +248,9 @@ WeekofInjuryBiv <- gf_point(PostIPT ~ WeekOfInjury, data = finalData1)%>%
 
 grid.arrange(AgeAtConcussionBiv, WeekofInjuryBiv, ncol = 2)
 ```
-```{r, warning = FALSE, echo = FALSE, fig.show='hide'}
+```{r, warning = FALSE, echo = FALSE, results='hide'}
 cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
 cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
-
 ```
 **Fig. 5.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also little relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
 
@@ -256,7 +264,6 @@ PreIPTOutliers <- gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
 PostIPTvsPreIPTOutliers <- lm(PostIPT ~ PreIPT, data = finalData1)
 PostIPTvsPreIPTOutliersResids <- mplot(PostIPTvsPreIPTOutliers, which = 1)
 PostIPTvsPreIPTOutliersQQ <- mplot(PostIPTvsPreIPTOutliers, which = 2)
-
 ```
 
 
@@ -264,7 +271,7 @@ PostIPTvsPreIPTOutliersQQ <- mplot(PostIPTvsPreIPTOutliers, which = 2)
 grid.arrange(PreIPTOutliers, PostIPTvsPreIPTOutliersResids, PostIPTvsPreIPTOutliersQQ, ncol = 3)
 ```
 
-**Fig. 6. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed two unusual points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. We will evaluate the most extreme outlier and see if conditions improve by only removing one point to preserve numbers. 
+**Fig. 6. Pre-Injury Play Time With the Outliers.** After conducting bivariate analysis for Post-Injury Play Time vs. Pre-Injury Play Time, we noticed some unusual points: one at Pre-Injury Play Time = 0 and Post-Injury Play Time > 80, and another at Pre-Injury Play Time at around 83 and Post-Injury Play Time <25. We will evaluate the most extreme outlier and see if conditions improve by only removing one point to preserve numbers. 
 
 ```{r warning = FALSE, echo = FALSE, fig.height = 3, fig.width = 4}
 plot(PostIPTvsPreIPTOutliers, which = 5)
@@ -311,7 +318,7 @@ msummary(KitchenSink)
 ModTwoPred <- lm(PostIPT ~ PreIPT + amtGamesMissedC, data = FDfiltered)
 msummary(ModTwoPred)
 ```
-**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** The MLR model is significant overall, F(3,164) = 60, p-value <0.001. Within the model, Pre-Injury Play Time (p-value <0.001 for the t-test) and Missing two or more games (p-value = 0.015 for the t-test) are significant predictors. Missing one game is not a significant predictor in the MLR model, p-value = 0.777 for the t-test. 
+**Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** The MLR model is significant overall, F(3,164) = 60, p-value <0.001. Within the model, Pre-Injury Play Time (p-value <0.001 for the t-test) and Missing two or more games (p-value = 0.015 for the t-test) are significant predictors. Missing one game is not a significant predictor in the MLR model, with a p-value = 0.777 for the t-test. 
 
 ```{r  warning = FALSE, echo = FALSE, fig.height=3, fig.width=12}
 mod2Resid <- mplot(ModTwoPred, which = 1)
@@ -324,9 +331,8 @@ grid.arrange(mod2Resid, mod2QQ, ncol = 2)
 ```{r warning = FALSE, echo = FALSE}
 anova(PreIPTFiltered, ModTwoPred, KitchenSink)
 ```
-**Table 4. Nested F-Test** The two predictor model with Pre-Injury Play Time and Amount of Games Missed (categorical) accounts for significantly more variable in Post-Injury Play Time based on nested f-test, F(2,164) = 3.09 p-value = 0.048. 
+**Table 4. Nested F-Test** The two predictor model with Pre-Injury Play Time and Amount of Games Missed (categorical) accounts for significantly more variablility in Post-Injury Play Time based on nested f-test, F(2,164) = 3.09 p-value = 0.048. 
 
-## Final Model
 
 # **Interpreting the Final Model**
 
