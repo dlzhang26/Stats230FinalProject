@@ -49,12 +49,12 @@ options(digits=5)
 
 
 #For Kaitlyn's computer
-df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+#df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
-#df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("/home/class26/anwobi26/Stats230_proj/HeadInjuredPlayers.csv")
+df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("/home/class26/anwobi26/Stats230_proj/HeadInjuredPlayers.csv")
 
 ###############################################################################################
 ##Merge
@@ -130,10 +130,28 @@ Insert stuff here.
 # **Methods**
 
 ## Data Set
-Insert description of data set here.
+The Concussions in the NFL (2012-2014) data we used contains the dataset of NFL players who were recorded for sustained concussions, head injuries, or illnesses during the season from the years 2012 to 2014. This data set details a number of factors surrounding these players and their injuries such as pre-season injury history, position, average play time after injury, the number of weeks injured, the season they got injured, and more. The population of this data set that was sampled is NFL players during the 2012-2014 seasons that obtained a concussion. We filtered the data set for only concussed players to determine the impact of concussions on players’ total playing time.
 
 ## Variables
-Insert information on variables here.
+Response Variable:
+
+Post-Injury Play Time: The variable post-injury playtime (PostIPT) is our response variable and it represents the average playtime for a player after their concussion injury measured by downs played. Post-injury playtime is a quantitative variable that has a bimodal distribution and is symmetric.
+
+
+Explanatory Variable: The variables pre-injury playtime, week of injury, age of concussion, amount of games missed, position, and preseason injury were the explanatory variables.
+
+
+Pre-injury playtime: Pre-injury playtime (PreIPT) is a quantitative variable that represents the average playtime for a player pre concussion injury measured by downs played. The distribution of pre-injury play time is unimodal and slightly skewed to the left. There are no unusual points. 
+
+Week of injury: Week of injury (WeekOfInjury) is a quantitative variable that represents the week during the NFL season of 17 weeks that a player sustained a concussion. The distribution of week of injury is bimodal and almost uniform.
+
+Age of concussion: Age of concussion (AgeOfConcussion) is a quantitative variable that represents the player’s age in years at which they sustained the injury during the selected seasons. The distribution of age of concussion is unimodal and slightly skewed to the right. 
+
+Amount of games missed: The amount of games missed (amtGamesMissed) variable represents the amount of games in a season that a player misses due to a concussion. The distribution is strongly skewed to the right, with the majority of players not missing any games. In order to make the heavily skewed distribution usable for our analysis, we decided to transform this variable into a categorical variable. The categories within this transformed variable include “less than 1 game missed”, “one game missed”, and “2 or more games missed”. Majority of the players didn't miss any games.
+
+Position: Position (Position) is a qualitative variable that represents the player’s position. The categories of this variable include: defensive end (1), defensive tackle (2), safety (3), comerback (4), long snapper (5), wide receiver (6), tight end (7), linebacker (8), quarterback (9), center (10), guard (11), full back (12), running back (13) and offensive tackle (14). To make this variable easier for further analysis, we transformed this variable into two broader categories: "Offense" and "Defense".
+
+Preseason injury: Preseason injury (PreseasonInjury) is a qualitative variable that represents if a player got injured during the pre-season of their respective season of their concussion injury. Categories are “yes”, indicating a preseason injury, and “no”, indicating no injuries sustained during the pre-season. Majority of the players in the sample did not sustain a preseason injury so we removed this variable for our analysis.
 
 ## Statistical Models
 Insert info on statistical models here.
