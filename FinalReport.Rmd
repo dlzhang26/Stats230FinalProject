@@ -225,15 +225,21 @@ PositionBiv <- gf_boxplot(PostIPT ~ PositionC, data = finalData1)%>%
 
 AmtgamesmissedBiv <- gf_boxplot(PostIPT ~ amtGamesMissedC, data = finalData1)%>%
   gf_labs(title = "Post-Injury Play-Time vs. Amount of Games Missed", x = "Amount of Games Missed", y = "Post-Injury Play Time")
-
+```
+```{r, warning = FALSE, echo = FALSE, fig.show='hide'}
+amtgamesmissedmod <- lm(PostIPT ~ amtGamesMissedC, data = finalData1)
+amtgamesmissedresids <- mplot(amtgamesmissedmod, which = 1)
+amtgamesmissedqq <- mplot(amtgamesmissedmod, which = 2)
+```
+```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 12}
 grid.arrange(PositionBiv, AmtgamesmissedBiv, ncol = 2)
+grid.arrange(amtgamesmissedresids, amtgamesmissedqq, ncol = 2)
 ```
 ```{r, warning = FALSE, echo = FALSE, results='hide'}
 favstats(PostIPT ~ PositionC, data = finalData1)
 favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
 ```
-
-**Fig. 4.** Regarding Position, there does not seem to be a massive difference in the median and IQR of Post-Injury Play Time between offensive players (median = 47, IQR = 39) and defensive players (median = 54, IQR = 44.25). This suggests that a player's position may not play a role in their post-injury play time. However, regarding Amount of Games Missed, the median and IQR of Post-Injury Play Time for players who missed two or more games (median = 23, IQR = 39) looks lower than that of players who missed one game (median = 51, IQR = 43. 25) and players who missed no games (median = 49, IQR = 41.25). This suggests that the more games a player misses, the less play time they get after the injury. 
+**Fig. 4.** Regarding Position, there does not seem to be a massive difference in the median and IQR of Post-Injury Play Time between offensive players (median = 47, IQR = 39) and defensive players (median = 54, IQR = 44.25). This suggests that a player's position may not play a role in their post-injury play time. However, regarding Amount of Games Missed, the median and IQR of Post-Injury Play Time for players who missed two or more games (median = 23, IQR = 39) looks lower than that of players who missed one game (median = 51, IQR = 43.25) and players who missed no games (median = 49, IQR = 41.25). This suggests that the more games a player misses, the less play time they get after the injury. Since there may be a relationship here, we checked the conditions for Amount of Games Missed: the residuals plot looks good, and the ratio of the largest standard deviation to the smallest standard deviation is less than 2 so we have equal variance. However, the QQ plot reveals that many observations deviate near the top and bottom, so we proceed with extreme caution regarding normality of errors. 
 
 ### Quantitative Variables
 
@@ -280,8 +286,8 @@ plot(PostIPTvsPreIPTOutliers, which = 5)
 **Fig. 6a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set) is the most unusual point. This player is Chris Prosinski, identified as an extreme outlier due to his standardized residuals exceeding 4 (threshold is 3) and high leverage over 3.5 (high leverage threshold at 6/203 = 0.0296). Upon researching Prosinski's injury, we found that he played fewer downs before his injury in week 15 and none after. One possible explanation is a data entry error where Prosinski's playtime before and after the injury was reversed. Therefore, we will remove this player and assess if conditions improve.
 
 ```{r, warning = FALSE, echo = FALSE}
-outliers <-finalData1[c(30), ]
-FDfiltered <- finalData1[-c(30),]
+outliers <-finalData1[c(37), ]
+FDfiltered <- finalData1[-c(37),]
 
 PreIPTFilteredPoint<-gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
@@ -346,4 +352,6 @@ $\hat{\text{PostIPT(MissingTwoOrMoreGames)}} = -3.9416 + 0.8698(PreIPT)$
 
 
 # **Conclusion**
-Put conclusion here.
+At the beginning of this study, we sought to identify any variables that may help predict an NFL football player's play time after they recover from their concussion. We ultimately found that  Pre-Injury Play Time and the Amount of Games Missed significantly influenced a player's post-injury play time. More specifically, our final model revealed that the more play time a player had before his concussion, the more play time the player would have after his concussion. The final model additionally revealed that if a player missed two or more games, he would have significantly less post-injury play time than a player who missed no games. 
+Our current model only explains 51.5% of the variability in post-injury play time, and consistently under-predicts post-injury play time for players. We believe this may be because our data set was not comprehensive enough and lacked variables that may play a large role in post-concussion play time. For instance, variables like the severity of the concussion could impact post-injury play time; a player with a more severe concussion, despite being cleared to play, may return less healthy than a player with a less severe concussion which might impact their post-injury play time. Additionally, the data set doesn't separately account for players who went to playoffs and therefore played more games than a regular season. Having a variable indicating "yes" - the player had playoff games - and "no" - the player did not have playoff games - could also explain some variability. Additional limitations include the fact that this is an observational study, so we cannot make any causal conclusions, and that the QQ plot for our model is not as normal as we'd like it to be. 
+Since we were only barely able to satisfy our conditions, we are considering a Randomization F-test as our next step to see if we can identify any significant relationships in that manner. Another next step is to find a more robust data set, hopefully with more variables and more seasons. At the start of the study, we hoped that pre-season injury may help explain some variability in post-injury play time, but we had to remove this variable because of the imbalance of observations for each category. With a larger data set, we might have a more balanced pre-season injury variable, and yet another variable that might help us predict post-injury play time - something that will have significant implications in the world of football. 
