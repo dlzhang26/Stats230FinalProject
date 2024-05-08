@@ -129,7 +129,7 @@ Concussions have been one of the most common injuries in the NFL for some time n
 # **Methods**
 
 ## Data Set
-The Concussions in the NFL (2012-2014) data we used contains the data set of NFL players who were recorded for sustained concussions, head injuries, or illnesses during the season from the years 2012 to 2014. This data set details a number of factors surrounding these players and their injuries such as pre-season injury history, position, average play time after injury, the number of weeks injured, the season they got injured, and more. The population of this data set that was sampled is NFL players during the 2012-2014 seasons that obtained a concussion. We filtered the data set for only concussed players to determine the impact of concussions on players’ total playing time.
+The Concussions in the NFL (2012-2014) data we used contains the data set of NFL players who were recorded for sustained concussions, head injuries, or illnesses during the season from the years 2012 to 2014. This data set details a number of factors surrounding these players and their injuries such as pre-season injury history, position, average play time after injury, the number of weeks injured, the season they got injured, and more. Our data set is the population itself, so our findings are applicable to the years that we have selected for the study. We filtered the data set for only concussed players to determine the impact of concussions on players’ total playing time.
 
 ## Variables
 
@@ -155,6 +155,7 @@ The variables pre-injury playtime, week of injury, age of concussion, amount of 
 ## Statistical Methods
 
   We constructed box plots to relate Post-Injury Play Time to our qualitative variables: Position, and Amount of Games Missed. We constructed scatter plots to relate Post-Injury Play Time to our quantitative variables: Pre-Injury Play Time, Week of Injury, and Age at Concussion. We checked conditions using residuals plots for equal variance and linearity and qq-plots for normality. We obtained one final model with Pre-Injury Play Time as a predictor. We evaluated the significance of this simple linear regression(SLR) model using the p-value for the F-statistic. We then removed unusual points using a combined leverage vs. standard residuals plot and Cooks Distance plot. We only removed one observation for the sake of preserving data. 
+  
   For multiple linear regression we obtained a Variance Inflation Factor(VIF) for each predictor to detect issues with multicollinearity. Using p-values for the t-test, we reduced our kitchen sink model to our second final model with Pre-injury Play Time and Games Missed as a categorical variable. We checked conditions using a normal QQ-plot (for normality of residuals) and residuals vs. fitted plot (for equal variance and linearity). We evaluated the significance of this model using the p-value for F-statistic. Since our simple linear regression model was nested in our MLR model, we conducted a nested F-test and used the p-value associated with the F-statistic to evaluate if the MLR model was better overall. 
 
 # **Results**
@@ -304,8 +305,8 @@ plot(PostIPTvsPreIPTOutliers, which = 5)
 **Fig. 6a. evaluating Pre-Injury Play Time Unusual Points** Observation 30 (Observation 37 in the actual data set) is the most unusual point. This player is Chris Prosinski, identified as an extreme outlier due to his standardized residuals exceeding 4 (threshold is 3) and high leverage over 3.5 (high leverage threshold at 6/203 = 0.0296). Upon researching Prosinski's injury, we found that he played fewer downs before his injury in week 15 and none after. One possible explanation is a data entry error where Prosinski's playtime before and after the injury was reversed. Therefore, we will remove this player and assess if conditions improve.
 
 ```{r, warning = FALSE, echo = FALSE}
-outliers <-finalData1[c(37), ]
-FDfiltered <- finalData1[-c(37),]
+outliers <-finalData1[c(30), ]
+FDfiltered <- finalData1[-c(30),]
 
 PreIPTFilteredPoint<-gf_point(PostIPT ~ PreIPT, data = FDfiltered)%>%
   gf_lm()%>%
@@ -344,9 +345,11 @@ msummary(ModTwoPred)
 ```
 **Table 3. Two Predictor Model With Pre-Injury Play Time and Amount of Games Missed** The MLR model is significant overall, F(3,164) = 60, p-value <0.001. Within the model, Pre-Injury Play Time (p-value <0.001 for the t-test) and Missing two or more games (p-value = 0.015 for the t-test) are significant predictors. Missing one game is not a significant predictor in the MLR model, with a p-value = 0.777 for the t-test. 
 
-```{r  warning = FALSE, echo = FALSE, fig.height=3, fig.width=12}
+```{r  warning = FALSE, echo = FALSE, fig.show='hide'}
 mod2Resid <- mplot(ModTwoPred, which = 1)
 mod2QQ <- mplot(ModTwoPred, which = 2)
+```
+```{r  warning = FALSE, echo = FALSE, fig.height=3, fig.width=12}
 grid.arrange(mod2Resid, mod2QQ, ncol = 2)
 ```
 
@@ -373,6 +376,8 @@ $\hat{\text{PostIPT(MissingTwoOrMoreGames)}} = -3.9416 + 0.8698(PreIPT)$
 
 
 # **Conclusion**
-At the beginning of this study, we sought to identify any variables that may help predict an NFL football player's play time after they recover from their concussion. We ultimately found that  Pre-Injury Play Time and the Amount of Games Missed significantly influenced a player's post-injury play time. More specifically, our final model revealed that the more play time a player had before his concussion, the more play time the player would have after his concussion. The final model additionally revealed that if a player missed two or more games, he would have significantly less post-injury play time than a player who missed no games. 
-Our current model only explains 51.5% of the variability in post-injury play time, and consistently under-predicts post-injury play time for players. We believe this may be because our data set was not comprehensive enough and lacked variables that may play a large role in post-concussion play time. For instance, variables like the severity of the concussion could impact post-injury play time; a player with a more severe concussion, despite being cleared to play, may return less healthy than a player with a less severe concussion which might impact their post-injury play time. Additionally, the data set doesn't separately account for players who went to playoffs and therefore played more games than a regular season. Having a variable indicating "yes" - the player had playoff games - and "no" - the player did not have playoff games - could also explain some variability. Additional limitations include the fact that this is an observational study, so we cannot make any causal conclusions, and that the QQ plot for our model is not as normal as we'd like it to be. 
-Since we were only barely able to satisfy our conditions, we are considering a Randomization F-test as our next step to see if we can identify any significant relationships in that manner. Another next step is to find a more robust data set, hopefully with more variables and seasons. At the start of the study, we hoped that pre-season injury may help explain some variability in post-injury play time, but we had to remove this variable because of the imbalance of observations for each category. With a larger data set, we might have a more balanced pre-season injury variable, and yet another variable that might help us predict post-injury play time - something that will have significant implications in the world of football. 
+  At the beginning of this study, we sought to identify any variables that may help predict an NFL football player's play time after they recover from their concussion. We ultimately found that  Pre-Injury Play Time and the Amount of Games Missed significantly influenced a player's post-injury play time. More specifically, our final model revealed that the more play time a player had before his concussion, the more play time the player would have after his concussion. The final model additionally revealed that if a player missed two or more games, he would have significantly less post-injury play time than a player who missed no games.
+  
+  Our current model only explains 51.5% of the variability in post-injury play time, and consistently under-predicts post-injury play time for players. We believe this may be because our data set was not comprehensive enough and lacked variables that may play a large role in post-concussion play time. For instance, variables like the grade of the concussion could impact post-injury play time; a player with a more severe concussion, despite being cleared to play, may return less healthy than a player with a less severe concussion which might impact their post-injury play time. This might also explain the amount of games that a player misses. Additionally, the data set doesn't separately account for players who went to playoffs and therefore played more games than a regular season. Having a variable indicating "yes" - the player had playoff games - and "no" - the player did not have playoff games - could also explain some variability. Additional limitations include the fact that this is an observational study, so we cannot make any causal conclusions, and that the QQ plot for our model is not as normal as we'd like it to be. 
+  
+  Since we were only barely able to satisfy our conditions, we are considering a Randomization F-test as our next step to see if we can identify any other significant relationships in that manner. Another next step is to find a more robust data set, hopefully with more variables and seasons. At the start of the study, we hoped that pre-season injury may help explain some variability in post-injury play time, but we had to remove this variable because of the imbalance of observations for each category. With a larger data set, we might have a more balanced pre-season injury variable, and yet another variable that might help us predict post-injury play time. Additionally, a larger data set would mean more seasons, and with more seasons, we may be able to determine if policy changes throughout the year or technological advancements also determine a player's post-injury play time. A model like this may have significant implications for the future of football.  
