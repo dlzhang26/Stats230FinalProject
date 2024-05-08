@@ -44,13 +44,13 @@ options(digits=5)
 #alldata <- read.csv("/home/class26/FIRSTPARTOFEMAIL/ConcussionInjuries2012-2014.csv") 
 
 ##Donna's computer
-#df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
-#df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
+df1 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/ConcussionInjuries2012-2014.csv")
+df2 <- read.csv("C:/Users/donna/OneDrive/Documents/STAT230/Stats230FinalProject/HeadInjuredPlayers.csv")
 
 
 #For Kaitlyn's computer
-df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
-df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
+#df1 <- read.csv("/home/class27/khuang27/Stats230FP/ConcussionInjuries2012-2014.csv")
+#df2 <- read.csv("/home/class27/khuang27/Stats230FP/HeadInjuredPlayers.csv")
 
 #For Arthur's computer
 #df1 <- read.csv("/home/class26/anwobi26/Stats230_proj/ConcussionInjuries2012-2014.csv")
@@ -174,7 +174,7 @@ gf_dhistogram(~PostIPT, data = finalData1)%>%
 ```{r, warning = FALSE, echo = FALSE, results='hide'}
 favstats(~PostIPT, data = finalData1)
 ```
-**Fig. 1.** The distribution is bimodal, with modes at around 20 downs and 62 downs, and symmetric. The median is 49 downs and the IQR is 42.5 downs. The mean is 47.37 downs and the standard deviation is 24.64 downs.
+**Fig. 1.** The distribution is bimodal, with modes at around 20 downs and 62 downs, and symmetric. The median is 49.5 downs and the IQR is 42.75 downs. The mean is 47.093 downs and the standard deviation is 24.758 downs.
 
 ### Explanatory Variables - Qualitative
 
@@ -200,11 +200,14 @@ grid.arrange(AmtGamesMissedUni, AmtGamesMissedUniQuant, ncol = 2)
 grid.arrange(PositionUni, PreSeasonInjuryUni, ncol = 2)
 ```
 ```{r, warning = FALSE, echo = FALSE, results='hide'}
+tally(~amtGamesMissedC,data = finalData1, format = "perc")
 favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
+
+tally(~PositionC,data = finalData1, format = "perc")
 favstats(PostIPT ~ PositionC, data = finalData1)
 tally(~PreseasonInjury,data = studydata)
 ```
-**Fig. 2** Amount of Games Missed, originally quantitative, is heavily right-skewed, indicating that the majority of players did not miss multiple games. We resultantly transformed it into a categorical variable with the categories "Less than 1 games missed" (54.79%), "One game missed" (33.79%), and "Two or more games missed" (11.42%). Regarding position, the categories and corresponding distribution are: defensive end (5.31%), defensive tackle (3.38%), safety (13.04%), comerback (14.98%), long snapper (0.48%), wide receiver (14.98%), tight end (9.18%), linebacker (10.14%), quarterback (4.35%), center (1.93%), guard (6.76%), full back (0.97%), running back (10.63%) and offensive tackle (3.87%). We transformed this variable into two broader categories: "Offense" (59.82%) and "Defense" (40.18%). Finally, regarding Pre-Season Injury, there was an imbalance of observations; only 9 players sustained a pre-season injury in the first two seasons, while 207 players did not. Thus, we removed this variable for our bivariate analysis. 
+**Fig. 2** Amount of Games Missed, originally quantitative, is heavily right-skewed, indicating that the majority of players did not miss multiple games. We resultantly transformed it into a categorical variable with the categories "no games" (48.309%), "one game" (35.266%), and "Two or more games" (16.425%). Regarding position, the categories and corresponding distribution are: defensive end (5.31%), defensive tackle (3.38%), safety (13.04%), comerback (14.98%), long snapper (0.48%), wide receiver (14.98%), tight end (9.18%), linebacker (10.14%), quarterback (4.35%), center (1.93%), guard (6.76%), full back (0.97%), running back (10.63%) and offensive tackle (3.87%). We transformed this variable into two broader categories: "Offense" (36.715%) and "Defense" (36.715%). Finally, regarding Pre-Season Injury, there was an imbalance of observations; only 9 players sustained a pre-season injury in the first two seasons, while 207 players did not. Thus, we removed this variable for our bivariate analysis. 
 
 
 ### Explanatory Variables - Quantitative
@@ -231,7 +234,7 @@ favstats(~PreIPT, data = finalData1)
 favstats(~WeekOfInjury, data = finalData1)
 favstats(~AgeAtConcussion, data = finalData1)
 ```
-**Fig. 3.** The distribution of Pre-Injury Play Time is unimodal and slightly skewed to the left. The median is 51 downs and the IQR is 33.07 downs. The mean is 47.321 downs and the standard deviation is 19.906 downs. Week of Injury looks bimodal and almost uniform, with one main mode at week 10. The median is 9 weeks and the IQR is 7 weeks. The mean is 8.78 weeks and the standard deviation is 4.60 weeks. The distribution of Age at Concussion is unimodal and slightly skewed to the right. The median is 25.88 years and the IQR is 3.91 years. The mean is 26.357 years and the standard deviation is 2.902 years. 
+**Fig. 3.** The distribution of Pre-Injury Play Time is unimodal and slightly skewed to the left. The median is 51 downs and the IQR is 32 downs. The mean is 47.418 downs and the standard deviation is 19.577 downs. Week of Injury looks bimodal and almost uniform, with one main mode at week 10. The median is 10 weeks and the IQR is 8 weeks. The mean is 9.4783 weeks and the standard deviation is 4.6902 weeks. The distribution of Age at Concussion is unimodal and slightly skewed to the right. The median is 26.31 years and the IQR is 4.07 years. The mean is 26.497 years and the standard deviation is 2.8941 years. 
 
 
 ## Bivariate Exploratory Data Analysis
@@ -258,7 +261,7 @@ grid.arrange(amtgamesmissedresids, amtgamesmissedqq, ncol = 2)
 favstats(PostIPT ~ PositionC, data = finalData1)
 favstats(PostIPT ~ amtGamesMissedC, data = finalData1)
 ```
-**Fig. 4.** Regarding Position, there does not seem to be a massive difference in the median and IQR of Post-Injury Play Time between offensive players (median = 47, IQR = 39) and defensive players (median = 54, IQR = 44.25). This suggests that a player's position may not play a role in their post-injury play time. However, regarding Amount of Games Missed, the median and IQR of Post-Injury Play Time for players who missed two or more games (median = 23, IQR = 39) looks lower than that of players who missed one game (median = 51, IQR = 43.25) and players who missed no games (median = 49, IQR = 41.25). This suggests that the more games a player misses, the less play time they get after the injury. Since there may be a relationship here, we checked the conditions for Amount of Games Missed: the residuals plot looks good, and the ratio of the largest standard deviation to the smallest standard deviation is less than 2 so we have equal variance. However, the QQ plot reveals that many observations deviate near the top and bottom, so we proceed with extreme caution regarding normality of errors. 
+**Fig. 4.** Regarding Position, there does not seem to be a massive difference in the median and IQR of Post-Injury Play Time between offensive players (median = 47, IQR = 39.5) and defensive players (median = 54, IQR = 44). This suggests that a player's position may not play a role in their post-injury play time. However, regarding Amount of Games Missed, the median and IQR of Post-Injury Play Time for players who missed two or more games (median = 22, IQR = 41.25) looks lower than that of players who missed one game (median = 51, IQR = 39.25) and players who missed no games (median = 48.5, IQR = 41.75). This suggests that the more games a player misses, the less play time they get after the injury. Since there may be a relationship here, we checked the conditions for Amount of Games Missed: the residuals plot looks good, and the ratio of the largest standard deviation to the smallest standard deviation is less than 2 so we have equal variance. However, the QQ plot reveals that many observations deviate near the top and bottom, so we proceed with extreme caution regarding normality of errors. 
 
 ### Quantitative Variables
 
@@ -277,7 +280,7 @@ grid.arrange(AgeAtConcussionBiv, WeekofInjuryBiv, ncol = 2)
 cor(PostIPT ~ AgeAtConcussion, data = finalData1, use = "pairwise")
 cor(PostIPT ~ WeekOfInjury, data = finalData1, use = "pairwise")
 ```
-**Fig. 5.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.0414). There is also little relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.00207).
+**Fig. 5.** There is little to no relationship between a player's post-injury play time and the age at which they sustained the concussion (r = 0.060528). There is also little relationship between a player's post-injury play time and the week at which they sustained the concussion (r = 0.015946).
 
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 7}
 PreIPTOutliers <- gf_point(PostIPT ~ PreIPT, data = finalData1)%>%
@@ -321,7 +324,7 @@ cor(PostIPT ~ PreIPT, data = FDfiltered, use = "pairwise")
 ```{r, warning = FALSE, echo = FALSE, fig.height = 4, fig.width = 18}
 grid.arrange(PreIPTFilteredPoint, PreIPTFilteredResids, PreIPTFilteredQQ, ncol = 3)
 ```
-**Fig. 7. Pre-Injury Play Time Without the Outlier.** After removing the outlier, the residuals and QQ plot improved. The residuals plot looks homoscedastic with one point that seems unusual (observation 53). The qq-plot has a slight taper on the lower hand, but looks normally distributed otherwise. There were other points that were part of the taper, so we decided to proceed with caution and keep observation 53. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.658). In other words, the more pre-injury play time a player had, the more post-injury play time a player had. 
+**Fig. 7. Pre-Injury Play Time Without the Outlier.** After removing the outlier, the residuals and QQ plot improved. The residuals plot looks homoscedastic with one point that seems unusual (observation 53). The qq-plot has a slight taper on the lower hand, but looks normally distributed otherwise. There were other points that were part of the taper, so we decided to proceed with caution and keep observation 53. There is a strong, positive, linear relationship between Post-Injury Play Time and Pre-Injury Play Time (r = 0.71081). In other words, the more pre-injury play time a player had, the more post-injury play time a player had. 
 
 ```{r warning = FALSE, echo = FALSE}
 msummary(PreIPTFiltered)
